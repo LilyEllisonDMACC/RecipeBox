@@ -46,6 +46,12 @@ public class Recipe {
 		this.ingredients = ingredients;
 		this.instructions = instructions;
 	}
+	
+	public Recipe(String title, String type) {
+		super();
+		this.title = title;
+		this.type = type;
+	}
 
 	/**
 	 * @return the id
@@ -121,6 +127,14 @@ public class Recipe {
 	public String toString() {
 		return "Recipe [id=" + id + ", title=" + title + ", type=" + type + ", ingredients=" + ingredients
 				+ ", instructions=" + instructions + "]";
+	}
+
+	/**
+	 * @return
+	 */
+	public char[] returnRecipeDetails() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
