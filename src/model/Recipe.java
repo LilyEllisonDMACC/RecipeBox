@@ -5,12 +5,14 @@
  */
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 /**
@@ -26,31 +28,38 @@ public class Recipe {
 	@GeneratedValue
 	@Column(name="ID")
 	private int id;
-	@Column(name="TITLE")
-	private String title;
-	@Column(name="TYPE")
-	private String type;
-	@Column(name="INGREDIENTS")
-	private List<String> ingredients;
+	@Column(name="NAME")
+	private String name;
 	@Column(name="INSTRUCTIONS")
-	private List<String> instructions;
+	private String instructions;
+	@Column(name="SERVINGS")
+	private int servings;
+	@Column(name="PREPTIME")
+	private int preparationTime;
+	@JoinColumn(name="INGREDIENTS")
+	private List<Ingredient> ingredients;
+	@JoinColumn(name="CATEGORIES")
+	private List<Category> categories;
 	
 	public Recipe() {
 		super();
 	}
 	
-	public Recipe(String title, String type, List<String> ingredients, List<String> instructions) {
-		super();
-		this.title = title;
-		this.type = type;
-		this.ingredients = ingredients;
-		this.instructions = instructions;
-	}
+    public Recipe(int id, String name, String instructions, int servings, int preparationTime) {
+        super();
+    	this.id = id;
+        this.name = name;
+        this.instructions = instructions;
+        this.servings = servings;
+        this.preparationTime = preparationTime;
+        this.ingredients = new ArrayList<>();
+        this.categories = new ArrayList<>();
+    }
 	
-	public Recipe(String title, String type) {
+	public Recipe(String name, Category category) {
 		super();
-		this.title = title;
-		this.type = type;
+		this.name = name;
+		this.categories = new ArrayList<>();
 	}
 
 	/**
@@ -68,73 +77,94 @@ public class Recipe {
 	}
 
 	/**
-	 * @return the title
+	 * @return the name
 	 */
-	public String getTitle() {
-		return title;
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * @param title the title to set
+	 * @param name the name to set
 	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	/**
-	 * @return the ingredients
-	 */
-	public List<String> getIngredients() {
-		return ingredients;
-	}
-
-	/**
-	 * @param ingredients the ingredients to set
-	 */
-	public void setIngredients(List<String> ingredients) {
-		this.ingredients = ingredients;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
 	 * @return the instructions
 	 */
-	public List<String> getInstructions() {
+	public String getInstructions() {
 		return instructions;
 	}
 
 	/**
 	 * @param instructions the instructions to set
 	 */
-	public void setInstructions(List<String> instructions) {
+	public void setInstructions(String instructions) {
 		this.instructions = instructions;
+	}
+
+	/**
+	 * @return the servings
+	 */
+	public int getServings() {
+		return servings;
+	}
+
+	/**
+	 * @param servings the servings to set
+	 */
+	public void setServings(int servings) {
+		this.servings = servings;
+	}
+
+	/**
+	 * @return the preparationTime
+	 */
+	public int getPreparationTime() {
+		return preparationTime;
+	}
+
+	/**
+	 * @param preparationTime the preparationTime to set
+	 */
+	public void setPreparationTime(int preparationTime) {
+		this.preparationTime = preparationTime;
+	}
+
+	/**
+	 * @return the ingredients
+	 */
+	public List<Ingredient> getIngredients() {
+		return ingredients;
+	}
+
+	/**
+	 * @param ingredients the ingredients to set
+	 */
+	public void setIngredients(List<Ingredient> ingredients) {
+		this.ingredients = ingredients;
+	}
+
+	/**
+	 * @return the categories
+	 */
+	public List<Category> getCategories() {
+		return categories;
+	}
+
+	/**
+	 * @param categories the categories to set
+	 */
+	public void setCategories(List<Category> categories) {
+		this.categories = categories;
 	}
 
 	@Override
 	public String toString() {
-		return "Recipe [id=" + id + ", title=" + title + ", type=" + type + ", ingredients=" + ingredients
-				+ ", instructions=" + instructions + "]";
-	}
-
-	/**
-	 * @return
-	 */
-	public char[] returnRecipeDetails() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Recipe [id=" + id + ", name=" + name + ", instructions=" + instructions + ", servings=" + servings
+				+ ", preparationTime=" + preparationTime + "]";
 	}
 
 }
+

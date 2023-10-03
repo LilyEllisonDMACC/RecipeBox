@@ -3,6 +3,8 @@
 	<persistence-unit name="RecipeBox" transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<class>model.Recipe</class>
+		<class>model.Ingredient</class>
+		<class>model.Category</class>
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
 			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/recipebox"/>
