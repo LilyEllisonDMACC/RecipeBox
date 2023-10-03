@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import controller.RecipeHelper;
+import model.Category;
 import model.Recipe;
 
 public class StartProgram {
@@ -13,29 +14,35 @@ public class StartProgram {
 
 		private static void addARecipe() {
 			// TODO Auto-generated method stub
-			System.out.print("Enter a title: ");
-			String title = in.nextLine();
-			System.out.print("Enter a tyep (ex: dessert, main course, etc): ");
-			String type = in.nextLine();
-			Recipe toAdd = new Recipe(title, type);
+			System.out.print("Enter a name: ");
+			String name = in.nextLine();
+			System.out.print("Enter a category (ex: dessert, main course, etc): ");
+			String category = in.nextLine();
+			Category newCat =new Category(category);
+			Recipe toAdd = new Recipe(name, newCat);
 			rh.insertRecipe(toAdd);
 
 		}
 		
+		/**
 		private static int selectSearchMethod() {
 			System.out.println("How would you like to search? ");
-			System.out.println("1 : Search by Title");
-			System.out.println("2 : Search by Type");
+			System.out.println("1 : Search by Name");
+			System.out.println("2 : Search by Category");
+			System.out.println("3 : Search by Ingredient");
+			System.out.println("4 : Search by Serving Size");
 			int searchBy = in.nextInt();
 			in.nextLine();
 			return searchBy;
 		}
+		*/
 
 		private static void deleteARecipe() {
 			// TODO Auto-generated method stub
 			
-			int wayToSearch = selectSearchMethod();
-			List<Recipe> deleteOptions = searchForRecipe(wayToSearch);
+			//int wayToSearch = selectSearchMethod();
+			//List<Recipe> deleteOptions = searchForRecipe(wayToSearch);
+			List<Recipe> deleteOptions = searchByRecipeName();
 			Recipe toDelete = pickOne(deleteOptions);
 			if(toDelete == null) {
 				runMenu();
@@ -51,6 +58,18 @@ public class StartProgram {
 		}
 
 		/**
+		 * @return
+		 */
+		private static List<Recipe> searchByRecipeName() {
+			List<Recipe> foundRecipes;
+			System.out.print("Enter the recipe's name: ");
+			String recipeName = in.nextLine();
+			foundRecipes = rh.searchForRecipeByTitle(recipeName);
+			
+			return foundRecipes;
+		}
+
+		/**
 		 * @param toDelete
 		 * @return
 		 */
@@ -58,12 +77,12 @@ public class StartProgram {
 			// TODO Auto-generated method stub
 			
 			System.out.println("Please confirm this is the recipe you would like to delete: ");
-			System.out.println("Recipe #" + toDelete.getId() + " : " + toDelete.getTitle() + ", a " + toDelete.getType());
+			System.out.println("Recipe #" + toDelete.getId() + " : " + toDelete.getName());
 			System.out.println("1: Yes");
 			System.out.println("2: No");
 			int confirmationInt = in.nextInt();
 			if(confirmationInt == 1) {
-				System.out.println("Deleting Recipe #" + toDelete.getId() + " : " + toDelete.getTitle() + ", a " + toDelete.getType());
+				System.out.println("Deleting Recipe #" + toDelete.getId() + " : " + toDelete.getName());
 				return true;
 			} else {
 				return false;
@@ -80,7 +99,7 @@ public class StartProgram {
 			if(verifyRecipe(deleteOptions)) {
 				System.out.println("Found Results.");
 				for (Recipe r : deleteOptions) {
-					System.out.println("Recipe #" + r.getId() + " : " + r.getTitle() + ", a " + r.getType());
+					System.out.println("Recipe #" + r.getId() + " : " + r.getName());
 				}
 				System.out.print("Which Recipe #: ");
 				int idToEdit = in.nextInt();
@@ -111,6 +130,7 @@ public class StartProgram {
 		 * @param wayToSearch
 		 * @return
 		 */
+		/**
 		private static List<Recipe> searchForRecipe(int wayToSearch) {
 			// TODO Auto-generated method stub
 			List<Recipe> foundRecipes;
@@ -127,17 +147,18 @@ public class StartProgram {
 			}
 			return foundRecipes;
 		}
-
+		*/
+/**
 		private static void editARecipe() {
-			// TODO Auto-generated method stub
+			//int wayToSearch = selectSearchMethod();
+			//List<Recipe> editOptions = searchForRecipe(wayToSearch);
 			
-			int wayToSearch = selectSearchMethod();
-			List<Recipe> editOptions = searchForRecipe(wayToSearch);
+			List<Recipe> editOptions = searchByRecipeName();
 			Recipe toEdit = pickOne(editOptions);
 			if(toEdit == null) {
 				runMenu();
 			} else {			
-				System.out.println("Retrieved " + toEdit.getTitle() + ", a " + toEdit.getType());
+				System.out.println("Retrieved " + toEdit.getName() + ", a " + toEdit.getType());
 				System.out.println("1 : Update Title");
 				System.out.println("2 : Update Type");
 				int update = in.nextInt();
@@ -157,7 +178,7 @@ public class StartProgram {
 			}
 
 		} 
-			
+			*/
 
 
 		
@@ -174,10 +195,9 @@ public class StartProgram {
 			while (goAgain) {
 				System.out.println("*  Select an option:");
 				System.out.println("*  1 -- Add a recipe");
-				System.out.println("*  2 -- Edit a recipe");
-				System.out.println("*  3 -- Delete a recipe");
-				System.out.println("*  4 -- View the list");
-				System.out.println("*  5 -- Exit the awesome program");
+				System.out.println("*  2 -- Delete a recipe");
+				System.out.println("*  3 -- View the list");
+				System.out.println("*  4 -- Exit the awesome program");
 				System.out.print("*  Your selection: ");
 				int selection = in.nextInt();
 				in.nextLine();
@@ -185,10 +205,8 @@ public class StartProgram {
 				if (selection == 1) {
 					addARecipe();
 				} else if (selection == 2) {
-					editARecipe();
-				} else if (selection == 3) {
 					deleteARecipe();
-				} else if (selection == 4) {
+				} else if (selection == 3) {
 					viewTheList();
 				} else {
 					rh.cleanUp();

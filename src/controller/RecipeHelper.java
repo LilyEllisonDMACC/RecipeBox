@@ -41,9 +41,9 @@ public class RecipeHelper {
 	public void deleteRecipe(Recipe toDelete) {
 		EntityManager em = emfactory.createEntityManager();
 		em.getTransaction().begin();
-		TypedQuery<Recipe> typedQuery = em.createQuery("select rb from Recipe rb where rb.title = :selectedTitle and rb.type = :selectedType", Recipe.class);
-		typedQuery.setParameter("selectedTitle", toDelete.getTitle());
-		typedQuery.setParameter("selectedType", toDelete.getType());
+		TypedQuery<Recipe> typedQuery = em.createQuery("select rb from Recipe rb where rb.name = :selectedName and rb.id = :selectedId", Recipe.class);
+		typedQuery.setParameter("selectedName", toDelete.getName());
+		typedQuery.setParameter("selectedId", toDelete.getId());
 		
 		typedQuery.setMaxResults(1);
 		
@@ -68,14 +68,14 @@ public class RecipeHelper {
 	}
 
 	/**
-	 * @param recipeTitle
+	 * @param recipeName
 	 * @return
 	 */
-	public List<Recipe> searchForRecipeByTitle(String recipeTitle) {
+	public List<Recipe> searchForRecipeByTitle(String recipeName) {
 		EntityManager em = emfactory.createEntityManager();
 		em.getTransaction().begin();
-		TypedQuery<Recipe> typedQuery = em.createQuery("select rb from Recipe rb where rb.title = :selectedTitle", Recipe.class);
-		typedQuery.setParameter("selectedTitle", recipeTitle);
+		TypedQuery<Recipe> typedQuery = em.createQuery("select rb from Recipe rb where rb.name = :selectedName", Recipe.class);
+		typedQuery.setParameter("selectedName", recipeName);
 		
 		List<Recipe> foundRecipes = typedQuery.getResultList();
 		em.close();
@@ -86,6 +86,7 @@ public class RecipeHelper {
 	 * @param recipeType
 	 * @return
 	 */
+	/**
 	public List<Recipe> searchForRecipeByType(String recipeType) {
 		EntityManager em = emfactory.createEntityManager();
 		em.getTransaction().begin();
@@ -96,6 +97,7 @@ public class RecipeHelper {
 		em.close();
 		return foundRecipes;
 	}
+	*/
 
 	/**
 	 * @param toEdit
