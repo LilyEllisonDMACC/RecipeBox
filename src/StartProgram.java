@@ -65,13 +65,7 @@ public class StartProgram {
 		rh.insertRecipe(toAdd);
 	}
 
-	/**
-	 * private static int selectSearchMethod() { System.out.println("How would you
-	 * like to search? "); System.out.println("1 : Search by Name");
-	 * System.out.println("2 : Search by Category"); System.out.println("3 : Search
-	 * by Ingredient"); System.out.println("4 : Search by Serving Size"); int
-	 * searchBy = in.nextInt(); in.nextLine(); return searchBy; }
-	 */
+
 
 	private static void deleteARecipe() {
 		// Retrieve a list of recipes that match the entered name
@@ -122,16 +116,109 @@ public class StartProgram {
 	}
 
 	/**
-	 * @return
+	 * Search for recipes based on user-defined criteria such as name, category, ingredient, or serving size.
 	 */
-	private static List<Recipe> searchByRecipeName() {
-		List<Recipe> foundRecipes;
-		System.out.print("Enter the recipe's name: ");
-		String recipeName = in.nextLine();
-		foundRecipes = rh.searchForRecipeByTitle(recipeName);
+	private static void searchRecipes() {
+	    int searchBy = selectSearchMethod();
 
-		return foundRecipes;
+	    switch (searchBy) {
+	        case 1:
+	            searchByName();
+	            break;
+	        case 2:
+	            searchByCategory();
+	            break;
+	        case 3:
+	            searchByIngredient();
+	            break;
+	        case 4:
+	            searchByServingSize();
+	            break;
+	        default:
+	            System.out.println("Invalid choice. Please select a valid search method.");
+	            break;
+	    }
 	}
+
+	/**
+	 * Search for recipes by name.
+	 */
+	private static void searchByName() {
+	    System.out.print("Enter the recipe's name: ");
+	    String recipeName = in.nextLine();
+	    List<Recipe> foundRecipes = rh.searchForRecipeByTitle(recipeName);
+
+	    if (!foundRecipes.isEmpty()) {
+	        displayFoundRecipes(foundRecipes);
+	    } else {
+	        System.out.println("No recipes found with the specified name.");
+	    }
+	}
+
+	/**
+	 * Search for recipes by category.
+	 */
+	private static void searchByCategory() {
+	    System.out.print("Enter the category: ");
+	    String category = in.nextLine();
+	    // Implement the search by category logic here
+	    // Example: List<Recipe> foundRecipes = rh.searchForRecipeByCategory(category);
+
+	    // Check if any recipes were found and display them
+	    // if (!foundRecipes.isEmpty()) {
+	    //     displayFoundRecipes(foundRecipes);
+	    // } else {
+	    //     System.out.println("No recipes found in the specified category.");
+	    // }
+	}
+
+	/**
+	 * Search for recipes by ingredient.
+	 */
+	private static void searchByIngredient() {
+	    System.out.print("Enter an ingredient: ");
+	    String ingredient = in.nextLine();
+	    // Implement the search by ingredient logic here
+	    // Example: List<Recipe> foundRecipes = rh.searchForRecipeByIngredient(ingredient);
+
+	    // Check if any recipes were found and display them
+	    // if (!foundRecipes.isEmpty()) {
+	    //     displayFoundRecipes(foundRecipes);
+	    // } else {
+	    //     System.out.println("No recipes found with the specified ingredient.");
+	    // }
+	}
+
+	/**
+	 * Search for recipes by serving size.
+	 */
+	private static void searchByServingSize() {
+	    System.out.print("Enter the serving size: ");
+	    int servingSize = in.nextInt();
+	    in.nextLine(); // Consume the newline character
+	    // Implement the search by serving size logic here
+	    // Example: List<Recipe> foundRecipes = rh.searchForRecipeByServingSize(servingSize);
+
+	    // Check if any recipes were found and display them
+	    // if (!foundRecipes.isEmpty()) {
+	    //     displayFoundRecipes(foundRecipes);
+	    // } else {
+	    //     System.out.println("No recipes found with the specified serving size.");
+	    // }
+	}
+
+	/**
+	 * Display a list of found recipes.
+	 *
+	 * @param recipes The list of found recipes to display.
+	 */
+	private static void displayFoundRecipes(List<Recipe> recipes) {
+	    System.out.println("Found Recipes:");
+	    for (Recipe recipe : recipes) {
+	        System.out.println(recipe.toString());
+	    }
+	}
+
 
 	/**
 	 * @param toDelete
