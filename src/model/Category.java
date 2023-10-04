@@ -21,28 +21,28 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name="categories")
+@Table(name = "categories")
 public class Category {
 	@Id
 	@GeneratedValue
-	@Column(name="ID")
+	@Column(name = "ID")
 	private int id;
-    @Column(name="NAME")
+	@Column(name = "NAME")
 	private String name;
-    
-    public Category() {
-    	super();
-    }
-    
-    public Category(int id, String name) {
-    	super();
-        this.id = id;
-        this.name = name;
-    }
-    
-    public Category(String name) {
-    	super();
-    	this.name = name;
-    }
+
+	public Category() {
+		super();
+	}
+
+	public Category(int id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+
+	public Category(String name) {
+		super();
+		this.name = name;
+	}
 
 }

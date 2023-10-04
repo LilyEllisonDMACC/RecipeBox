@@ -22,40 +22,40 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name="recipes")
+@Table(name = "recipes")
 public class Recipe {
 	@Id
 	@GeneratedValue
-	@Column(name="ID")
+	@Column(name = "ID")
 	private int id;
-	@Column(name="NAME")
+	@Column(name = "NAME")
 	private String name;
-	@Column(name="INSTRUCTIONS")
+	@Column(name = "INSTRUCTIONS")
 	private String instructions;
-	@Column(name="SERVINGS")
+	@Column(name = "SERVINGS")
 	private int servings;
-	@Column(name="PREPTIME")
+	@Column(name = "PREPTIME")
 	private int preparationTime;
-	@JoinColumn(name="INGREDIENTS")
+	@JoinColumn(name = "INGREDIENTS")
 	private List<Ingredient> ingredients;
-	@JoinColumn(name="CATEGORIES")
+	@JoinColumn(name = "CATEGORIES")
 	private List<Category> categories;
-	
+
 	public Recipe() {
 		super();
 	}
-	
-    public Recipe(int id, String name, String instructions, int servings, int preparationTime) {
-        super();
-    	this.id = id;
-        this.name = name;
-        this.instructions = instructions;
-        this.servings = servings;
-        this.preparationTime = preparationTime;
-        this.ingredients = new ArrayList<>();
-        this.categories = new ArrayList<>();
-    }
-	
+
+	public Recipe(int id, String name, String instructions, int servings, int preparationTime) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.instructions = instructions;
+		this.servings = servings;
+		this.preparationTime = preparationTime;
+		this.ingredients = new ArrayList<>();
+		this.categories = new ArrayList<>();
+	}
+
 	public Recipe(String name, Category category) {
 		super();
 		this.name = name;
@@ -167,4 +167,3 @@ public class Recipe {
 	}
 
 }
-

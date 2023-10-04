@@ -1,5 +1,4 @@
 
-
 import java.util.List;
 import java.util.Scanner;
 
@@ -9,222 +8,255 @@ import model.Recipe;
 
 public class StartProgram {
 
-		static Scanner in = new Scanner(System.in);
-		static RecipeHelper rh = new RecipeHelper();
+	static Scanner in = new Scanner(System.in);
+	static RecipeHelper rh = new RecipeHelper();
 
-		private static void addARecipe() {
-			// TODO Auto-generated method stub
-			System.out.print("Enter a name: ");
-			String name = in.nextLine();
-			System.out.print("Enter a category (ex: dessert, main course, etc): ");
-			String category = in.nextLine();
-			Category newCat =new Category(category);
-			Recipe toAdd = new Recipe(name, newCat);
-			rh.insertRecipe(toAdd);
+	private static void addARecipe() {
+	    System.out.print("Enter a name: ");
+	    String name = in.nextLine();
 
+	    // Validate servings (positive number input)
+	    int servings = -1;
+	    while (servings < 0) {
+	        System.out.print("Enter the number of servings: ");
+	        try {
+	            servings = Integer.parseInt(in.nextLine());
+	            if (servings < 0) {
+	                System.out.println("Please enter a positive number for servings.");
+	            }
+	        } catch (NumberFormatException e) {
+	            System.out.println("Invalid input. Please enter a number for servings.");
+	        }
+	    }
+
+	    // Validate preparation time (positive number input)
+	    int preparationTime = -1;
+	    while (preparationTime < 0) {
+	        System.out.print("Enter the preparation time in minutes: ");
+	        try {
+	            preparationTime = Integer.parseInt(in.nextLine());
+	            if (preparationTime < 0) {
+	                System.out.println("Please enter a positive number for preparation time.");
+	            }
+	        } catch (NumberFormatException e) {
+	            System.out.println("Invalid input. Please enter a number for preparation time.");
+	        }
+	    }
+
+	    System.out.print("Enter a category (e.g., dessert, main course, etc): ");
+	    String category = in.nextLine();
+	    
+	    // Validate category if needed.
+
+	    Category newCat = new Category(category);
+	    Recipe toAdd = new Recipe(name, servings, preparationTime, newCat);
+	    rh.insertRecipe(toAdd);
+	}
+
+
+	/**
+	 * private static int selectSearchMethod() { System.out.println("How would you
+	 * like to search? "); System.out.println("1 : Search by Name");
+	 * System.out.println("2 : Search by Category"); System.out.println("3 : Search
+	 * by Ingredient"); System.out.println("4 : Search by Serving Size"); int
+	 * searchBy = in.nextInt(); in.nextLine(); return searchBy; }
+	 */
+
+	private static void deleteARecipe() {
+	    // Retrieve a list of recipes that match the entered name
+	    List<Recipe> deleteOptions = searchByRecipeName();
+	    
+	    // If no recipes are found, inform the user and return to the main menu
+	    if (deleteOptions.isEmpty()) {
+	        System.out.println("No recipes found. Returning to the main menu.");
+	        return;
+	    }
+
+	    System.out.println("Select a recipe to delete:");
+
+	    // Display the list of recipes and allow the user to choose one for deletion
+	    for (int i = 0; i < deleteOptions.size(); i++) {
+	        Recipe recipe = deleteOptions.get(i);
+	        System.out.println((i + 1) + ": " + recipe.getName());
+	    }
+
+	    int choice = -1;
+	    while (choice < 1 || choice > deleteOptions.size()) {
+	        // Prompt the user to enter the number of the recipe they want to delete
+	        System.out.print("Enter the number of the recipe you want to delete: ");
+	        try {
+	            choice = Integer.parseInt(in.nextLine());
+	            
+	            // Validate the user's choice to ensure it's within a valid range
+	            if (choice < 1 || choice > deleteOptions.size()) {
+	                System.out.println("Invalid choice. Please enter a valid number.");
+	            }
+	        } catch (NumberFormatException e) {
+	            // Handle cases where the user enters non-numeric input
+	            System.out.println("Invalid input. Please enter a valid number.");
+	        }
+	    }
+
+	    // Get the recipe to delete based on the user's choice
+	    Recipe toDelete = deleteOptions.get(choice - 1);
+
+	    if (confirmDelete(toDelete)) {
+	        // If the user confirms the deletion, remove the recipe from the database
+	        rh.deleteRecipe(toDelete);
+	        System.out.println("Recipe deleted successfully.");
+	    } else {
+	        // If the user cancels the deletion, inform them and return to the main menu
+	        System.out.println("Deletion canceled. Returning to the main menu.");
+	    }
+	}
+
+
+	/**
+	 * @return
+	 */
+	private static List<Recipe> searchByRecipeName() {
+		List<Recipe> foundRecipes;
+		System.out.print("Enter the recipe's name: ");
+		String recipeName = in.nextLine();
+		foundRecipes = rh.searchForRecipeByTitle(recipeName);
+
+		return foundRecipes;
+	}
+
+	/**
+	 * @param toDelete
+	 * @return
+	 */
+	private static boolean confirmDelete(Recipe toDelete) {
+		// TODO Auto-generated method stub
+
+		System.out.println("Please confirm this is the recipe you would like to delete: ");
+		System.out.println("Recipe #" + toDelete.getId() + " : " + toDelete.getName());
+		System.out.println("1: Yes");
+		System.out.println("2: No");
+		int confirmationInt = in.nextInt();
+		if (confirmationInt == 1) {
+			System.out.println("Deleting Recipe #" + toDelete.getId() + " : " + toDelete.getName());
+			return true;
+		} else {
+			return false;
 		}
-		
-		/**
-		private static int selectSearchMethod() {
-			System.out.println("How would you like to search? ");
-			System.out.println("1 : Search by Name");
-			System.out.println("2 : Search by Category");
-			System.out.println("3 : Search by Ingredient");
-			System.out.println("4 : Search by Serving Size");
-			int searchBy = in.nextInt();
+	}
+
+	/**
+	 * @param deleteOptions
+	 * @return
+	 */
+	private static Recipe pickOne(List<Recipe> deleteOptions) {
+		// TODO Auto-generated method stub
+
+		if (verifyRecipe(deleteOptions)) {
+			System.out.println("Found Results.");
+			for (Recipe r : deleteOptions) {
+				System.out.println("Recipe #" + r.getId() + " : " + r.getName());
+			}
+			System.out.print("Which Recipe #: ");
+			int idToEdit = in.nextInt();
+			Recipe toEdit = rh.searchForRecipeById(idToEdit);
+			return toEdit;
+		} else {
+			return null;
+		}
+
+	}
+
+	/**
+	 * @param deleteOptions
+	 * @return
+	 */
+	private static boolean verifyRecipe(List<Recipe> deleteOptions) {
+		// TODO Auto-generated method stub
+		if (!deleteOptions.isEmpty()) {
+			return true;
+		} else {
+			System.out.println("---- No results found.");
+			System.out.println("Please try again.");
+			return false;
+		}
+	}
+
+	/**
+	 * @param wayToSearch
+	 * @return
+	 */
+	/**
+	 * private static List<Recipe> searchForRecipe(int wayToSearch) { // TODO
+	 * Auto-generated method stub List<Recipe> foundRecipes; if (wayToSearch == 1) {
+	 * System.out.print("Enter the recipe's title: "); String recipeTitle =
+	 * in.nextLine(); foundRecipes = rh.searchForRecipeByTitle(recipeTitle);
+	 * 
+	 * } else { System.out.print("Enter the type: "); String recipeType =
+	 * in.nextLine(); foundRecipes = rh.searchForRecipeByType(recipeType);
+	 * 
+	 * } return foundRecipes; }
+	 */
+	/**
+	 * private static void editARecipe() { //int wayToSearch = selectSearchMethod();
+	 * //List<Recipe> editOptions = searchForRecipe(wayToSearch);
+	 * 
+	 * List<Recipe> editOptions = searchByRecipeName(); Recipe toEdit =
+	 * pickOne(editOptions); if(toEdit == null) { runMenu(); } else {
+	 * System.out.println("Retrieved " + toEdit.getName() + ", a " +
+	 * toEdit.getType()); System.out.println("1 : Update Title");
+	 * System.out.println("2 : Update Type"); int update = in.nextInt();
+	 * in.nextLine();
+	 * 
+	 * if (update == 1) { System.out.print("New Title: "); String newTitle =
+	 * in.nextLine(); toEdit.setTitle(newTitle); } else if (update == 2) {
+	 * System.out.print("New Type: "); String newType = in.nextLine();
+	 * toEdit.setType(newType); }
+	 * 
+	 * rh.updateRecipe(toEdit); }
+	 * 
+	 * }
+	 */
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		runMenu();
+
+	}
+
+	public static void runMenu() {
+		boolean goAgain = true;
+		System.out.println("--- Welcome to our awesome recipe box! ---");
+		while (goAgain) {
+			System.out.println("*  Select an option:");
+			System.out.println("*  1 -- Add a recipe");
+			System.out.println("*  2 -- Delete a recipe");
+			System.out.println("*  3 -- View the list");
+			System.out.println("*  4 -- Exit the awesome program");
+			System.out.print("*  Your selection: ");
+			int selection = in.nextInt();
 			in.nextLine();
-			return searchBy;
-		}
-		*/
 
-		private static void deleteARecipe() {
-			// TODO Auto-generated method stub
-			
-			//int wayToSearch = selectSearchMethod();
-			//List<Recipe> deleteOptions = searchForRecipe(wayToSearch);
-			List<Recipe> deleteOptions = searchByRecipeName();
-			Recipe toDelete = pickOne(deleteOptions);
-			if(toDelete == null) {
-				runMenu();
+			if (selection == 1) {
+				addARecipe();
+			} else if (selection == 2) {
+				deleteARecipe();
+			} else if (selection == 3) {
+				viewTheList();
 			} else {
-				if(confirmDelete(toDelete)) {
-					rh.deleteRecipe(toDelete);
-				} else {
-					System.out.println("Results not confirmed. No action taken. Please try again.");
-					runMenu();
-				}
-			}			
-
-		}
-
-		/**
-		 * @return
-		 */
-		private static List<Recipe> searchByRecipeName() {
-			List<Recipe> foundRecipes;
-			System.out.print("Enter the recipe's name: ");
-			String recipeName = in.nextLine();
-			foundRecipes = rh.searchForRecipeByTitle(recipeName);
-			
-			return foundRecipes;
-		}
-
-		/**
-		 * @param toDelete
-		 * @return
-		 */
-		private static boolean confirmDelete(Recipe toDelete) {
-			// TODO Auto-generated method stub
-			
-			System.out.println("Please confirm this is the recipe you would like to delete: ");
-			System.out.println("Recipe #" + toDelete.getId() + " : " + toDelete.getName());
-			System.out.println("1: Yes");
-			System.out.println("2: No");
-			int confirmationInt = in.nextInt();
-			if(confirmationInt == 1) {
-				System.out.println("Deleting Recipe #" + toDelete.getId() + " : " + toDelete.getName());
-				return true;
-			} else {
-				return false;
+				rh.cleanUp();
+				System.out.println("   Goodbye!   ");
+				goAgain = false;
 			}
-		}
-
-		/**
-		 * @param deleteOptions
-		 * @return
-		 */
-		private static Recipe pickOne(List<Recipe> deleteOptions) {
-			// TODO Auto-generated method stub
-			
-			if(verifyRecipe(deleteOptions)) {
-				System.out.println("Found Results.");
-				for (Recipe r : deleteOptions) {
-					System.out.println("Recipe #" + r.getId() + " : " + r.getName());
-				}
-				System.out.print("Which Recipe #: ");
-				int idToEdit = in.nextInt();
-				Recipe toEdit = rh.searchForRecipeById(idToEdit);
-				return toEdit;
-			} else {
-				return null;
-			}
-			
-		}
-
-		/**
-		 * @param deleteOptions
-		 * @return
-		 */
-		private static boolean verifyRecipe(List<Recipe> deleteOptions) {
-			// TODO Auto-generated method stub
-			if(!deleteOptions.isEmpty()) {
-				return true;
-			} else {
-				System.out.println("---- No results found.");
-				System.out.println("Please try again.");
-				return false;
-			}
-		}
-
-		/**
-		 * @param wayToSearch
-		 * @return
-		 */
-		/**
-		private static List<Recipe> searchForRecipe(int wayToSearch) {
-			// TODO Auto-generated method stub
-			List<Recipe> foundRecipes;
-			if (wayToSearch == 1) {
-				System.out.print("Enter the recipe's title: ");
-				String recipeTitle = in.nextLine();
-				foundRecipes = rh.searchForRecipeByTitle(recipeTitle);
-				
-			} else {
-				System.out.print("Enter the type: ");
-				String recipeType = in.nextLine();
-				foundRecipes = rh.searchForRecipeByType(recipeType);
-
-			}
-			return foundRecipes;
-		}
-		*/
-/**
-		private static void editARecipe() {
-			//int wayToSearch = selectSearchMethod();
-			//List<Recipe> editOptions = searchForRecipe(wayToSearch);
-			
-			List<Recipe> editOptions = searchByRecipeName();
-			Recipe toEdit = pickOne(editOptions);
-			if(toEdit == null) {
-				runMenu();
-			} else {			
-				System.out.println("Retrieved " + toEdit.getName() + ", a " + toEdit.getType());
-				System.out.println("1 : Update Title");
-				System.out.println("2 : Update Type");
-				int update = in.nextInt();
-				in.nextLine();
-
-				if (update == 1) {
-					System.out.print("New Title: ");
-					String newTitle = in.nextLine();
-					toEdit.setTitle(newTitle);
-				} else if (update == 2) {
-					System.out.print("New Type: ");
-					String newType = in.nextLine();
-					toEdit.setType(newType);
-				} 
-
-				rh.updateRecipe(toEdit);
-			}
-
-		} 
-			*/
-
-
-		
-
-		public static void main(String[] args) {
-			// TODO Auto-generated method stub
-			runMenu();
-
-		}
-
-		public static void runMenu() {
-			boolean goAgain = true;
-			System.out.println("--- Welcome to our awesome recipe box! ---");
-			while (goAgain) {
-				System.out.println("*  Select an option:");
-				System.out.println("*  1 -- Add a recipe");
-				System.out.println("*  2 -- Delete a recipe");
-				System.out.println("*  3 -- View the list");
-				System.out.println("*  4 -- Exit the awesome program");
-				System.out.print("*  Your selection: ");
-				int selection = in.nextInt();
-				in.nextLine();
-
-				if (selection == 1) {
-					addARecipe();
-				} else if (selection == 2) {
-					deleteARecipe();
-				} else if (selection == 3) {
-					viewTheList();
-				} else {
-					rh.cleanUp();
-					System.out.println("   Goodbye!   ");
-					goAgain = false;
-				}
-
-			}
-
-		}
-
-		private static void viewTheList() {
-			List<Recipe> allRecipes = rh.showAllRecipes();
-			for(Recipe singleRecipe : allRecipes) {
-				System.out.println(singleRecipe.toString());
-			}
-			
 
 		}
 
 	}
+
+	private static void viewTheList() {
+		List<Recipe> allRecipes = rh.showAllRecipes();
+		for (Recipe singleRecipe : allRecipes) {
+			System.out.println(singleRecipe.toString());
+		}
+
+	}
+
+}
