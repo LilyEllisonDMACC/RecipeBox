@@ -12,7 +12,6 @@
 
 package model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -20,6 +19,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -31,140 +33,84 @@ public class Recipe {
 	private int id;
 	@Column(name = "NAME")
 	private String name;
-	@Column(name = "INSTRUCTIONS")
-	private String instructions;
 	@Column(name = "SERVINGS")
 	private int servings;
 	@Column(name = "PREPTIME")
 	private int preparationTime;
-	@JoinColumn(name = "INGREDIENTS")
+
+	@OneToMany
+	@JoinColumn(name = "RECIPE_ID")
 	private List<Ingredient> ingredients;
-	@JoinColumn(name = "CATEGORIES")
+
+	@ManyToMany
+	@JoinTable(name = "recipe_category", joinColumns = @JoinColumn(name = "recipe_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
 	private List<Category> categories;
 
 	public Recipe() {
 		super();
 	}
 
-	public Recipe(int id, String name, String instructions, int servings, int preparationTime) {
+	// Constructor for creating a Recipe with a name, servings, preparation time,
+	// and a single Category.
+	public Recipe(String name, int servings, int preparationTime, Category category) {
 		super();
-		this.id = id;
 		this.name = name;
-		this.instructions = instructions;
 		this.servings = servings;
 		this.preparationTime = preparationTime;
-		this.ingredients = new ArrayList<>();
-		this.categories = new ArrayList<>();
+		this.categories = List.of(category);
 	}
 
-	public Recipe(String name, Category category) {
-		super();
-		this.name = name;
-		this.categories = new ArrayList<>();
-	}
-
-	/**
-	 * @return the id
-	 */
 	public int getId() {
 		return id;
 	}
 
-	/**
-	 * @param id the id to set
-	 */
 	public void setId(int id) {
 		this.id = id;
 	}
 
-	/**
-	 * @return the name
-	 */
 	public String getName() {
 		return name;
 	}
 
-	/**
-	 * @param name the name to set
-	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	/**
-	 * @return the instructions
-	 */
-	public String getInstructions() {
-		return instructions;
-	}
-
-	/**
-	 * @param instructions the instructions to set
-	 */
-	public void setInstructions(String instructions) {
-		this.instructions = instructions;
-	}
-
-	/**
-	 * @return the servings
-	 */
 	public int getServings() {
 		return servings;
 	}
 
-	/**
-	 * @param servings the servings to set
-	 */
 	public void setServings(int servings) {
 		this.servings = servings;
 	}
 
-	/**
-	 * @return the preparationTime
-	 */
 	public int getPreparationTime() {
 		return preparationTime;
 	}
 
-	/**
-	 * @param preparationTime the preparationTime to set
-	 */
 	public void setPreparationTime(int preparationTime) {
 		this.preparationTime = preparationTime;
 	}
 
-	/**
-	 * @return the ingredients
-	 */
 	public List<Ingredient> getIngredients() {
 		return ingredients;
 	}
 
-	/**
-	 * @param ingredients the ingredients to set
-	 */
 	public void setIngredients(List<Ingredient> ingredients) {
 		this.ingredients = ingredients;
 	}
 
-	/**
-	 * @return the categories
-	 */
 	public List<Category> getCategories() {
 		return categories;
 	}
 
-	/**
-	 * @param categories the categories to set
-	 */
 	public void setCategories(List<Category> categories) {
 		this.categories = categories;
 	}
 
 	@Override
 	public String toString() {
-		return "Recipe [id=" + id + ", name=" + name + ", instructions=" + instructions + ", servings=" + servings
-				+ ", preparationTime=" + preparationTime + "]";
+		return "Recipe [id=" + id + ", name=" + name + ", servings=" + servings + ", preparationTime=" + preparationTime
+				+ "]";
 	}
-
 }

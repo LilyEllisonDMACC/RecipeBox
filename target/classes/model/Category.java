@@ -1,8 +1,15 @@
 /**
- * @author tehli - lbellison
+ * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
- * Oct 3, 2023
+ * Oct 2, 2023
  */
+
+/**
+ * @author Adam Reese - amreese3
+ * CIS175 - Fall 2023
+ * Oct 2, 2023
+ */
+
 package model;
 
 import java.util.ArrayList;
@@ -14,35 +21,29 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-/**
- * @author LILY ELLISON - LBELLISON
- * CIS175 - FALL 2023
- * Oct 3, 2023
- */
-
 @Entity
-@Table(name="categories")
+@Table(name = "categories")
 public class Category {
 	@Id
 	@GeneratedValue
-	@Column(name="ID")
+	@Column(name = "ID")
 	private int id;
-    @Column(name="NAME")
+	@Column(name = "NAME")
 	private String name;
-    
-    public Category() {
-    	super();
-    }
-    
-    public Category(int id, String name) {
-    	super();
-        this.id = id;
-        this.name = name;
-    }
-    
-    public Category(String name) {
-    	super();
-    	this.name = name;
-    }
+
+	public Category() {
+		super();
+	}
+
+	public Category(int id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+
+	public Category(String name) {
+		super();
+		this.name = name;
+	}
 
 }
