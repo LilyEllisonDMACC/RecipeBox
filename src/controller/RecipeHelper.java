@@ -1,8 +1,15 @@
 /**
- * @author tehli - lbellison
+ * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
  * Oct 2, 2023
  */
+
+/**
+ * @author Adam Reese - amreese3
+ * CIS175 - Fall 2023
+ * Oct 2, 2023
+ */
+
 package controller;
 
 import java.util.List;
@@ -14,11 +21,6 @@ import javax.persistence.TypedQuery;
 
 import model.Recipe;
 
-/**
- * @author LILY ELLISON - LBELLISON
- * CIS175 - FALL 2023
- * Oct 2, 2023
- */
 public class RecipeHelper {
 
 	static EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("RecipeBox");

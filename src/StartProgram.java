@@ -1,4 +1,16 @@
 
+/**
+ * @author Lily Ellison - lbellison
+ * CIS175 - Fall 2023
+ * Oct 2, 2023
+ */
+
+/**
+ * @author Adam Reese - amreese3
+ * CIS175 - Fall 2023
+ * Oct 2, 2023
+ */
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,47 +24,46 @@ public class StartProgram {
 	static RecipeHelper rh = new RecipeHelper();
 
 	private static void addARecipe() {
-	    System.out.print("Enter a name: ");
-	    String name = in.nextLine();
+		System.out.print("Enter a name: ");
+		String name = in.nextLine();
 
-	    // Validate servings (positive number input)
-	    int servings = -1;
-	    while (servings < 0) {
-	        System.out.print("Enter the number of servings: ");
-	        try {
-	            servings = Integer.parseInt(in.nextLine());
-	            if (servings < 0) {
-	                System.out.println("Please enter a positive number for servings.");
-	            }
-	        } catch (NumberFormatException e) {
-	            System.out.println("Invalid input. Please enter a number for servings.");
-	        }
-	    }
+		// Validate servings (positive number input)
+		int servings = -1;
+		while (servings < 0) {
+			System.out.print("Enter the number of servings: ");
+			try {
+				servings = Integer.parseInt(in.nextLine());
+				if (servings < 0) {
+					System.out.println("Please enter a positive number for servings.");
+				}
+			} catch (NumberFormatException e) {
+				System.out.println("Invalid input. Please enter a number for servings.");
+			}
+		}
 
-	    // Validate preparation time (positive number input)
-	    int preparationTime = -1;
-	    while (preparationTime < 0) {
-	        System.out.print("Enter the preparation time in minutes: ");
-	        try {
-	            preparationTime = Integer.parseInt(in.nextLine());
-	            if (preparationTime < 0) {
-	                System.out.println("Please enter a positive number for preparation time.");
-	            }
-	        } catch (NumberFormatException e) {
-	            System.out.println("Invalid input. Please enter a number for preparation time.");
-	        }
-	    }
+		// Validate preparation time (positive number input)
+		int preparationTime = -1;
+		while (preparationTime < 0) {
+			System.out.print("Enter the preparation time in minutes: ");
+			try {
+				preparationTime = Integer.parseInt(in.nextLine());
+				if (preparationTime < 0) {
+					System.out.println("Please enter a positive number for preparation time.");
+				}
+			} catch (NumberFormatException e) {
+				System.out.println("Invalid input. Please enter a number for preparation time.");
+			}
+		}
 
-	    System.out.print("Enter a category (e.g., dessert, main course, etc): ");
-	    String category = in.nextLine();
-	    
-	    // Validate category if needed.
+		System.out.print("Enter a category (e.g., dessert, main course, etc): ");
+		String category = in.nextLine();
 
-	    Category newCat = new Category(category);
-	    Recipe toAdd = new Recipe(name, servings, preparationTime, newCat);
-	    rh.insertRecipe(toAdd);
+		// Validate category if needed.
+
+		Category newCat = new Category(category);
+		Recipe toAdd = new Recipe(name, servings, preparationTime, newCat);
+		rh.insertRecipe(toAdd);
 	}
-
 
 	/**
 	 * private static int selectSearchMethod() { System.out.println("How would you
@@ -63,53 +74,52 @@ public class StartProgram {
 	 */
 
 	private static void deleteARecipe() {
-	    // Retrieve a list of recipes that match the entered name
-	    List<Recipe> deleteOptions = searchByRecipeName();
-	    
-	    // If no recipes are found, inform the user and return to the main menu
-	    if (deleteOptions.isEmpty()) {
-	        System.out.println("No recipes found. Returning to the main menu.");
-	        return;
-	    }
+		// Retrieve a list of recipes that match the entered name
+		List<Recipe> deleteOptions = searchByRecipeName();
 
-	    System.out.println("Select a recipe to delete:");
+		// If no recipes are found, inform the user and return to the main menu
+		if (deleteOptions.isEmpty()) {
+			System.out.println("No recipes found. Returning to the main menu.");
+			return;
+		}
 
-	    // Display the list of recipes and allow the user to choose one for deletion
-	    for (int i = 0; i < deleteOptions.size(); i++) {
-	        Recipe recipe = deleteOptions.get(i);
-	        System.out.println((i + 1) + ": " + recipe.getName());
-	    }
+		System.out.println("Select a recipe to delete:");
 
-	    int choice = -1;
-	    while (choice < 1 || choice > deleteOptions.size()) {
-	        // Prompt the user to enter the number of the recipe they want to delete
-	        System.out.print("Enter the number of the recipe you want to delete: ");
-	        try {
-	            choice = Integer.parseInt(in.nextLine());
-	            
-	            // Validate the user's choice to ensure it's within a valid range
-	            if (choice < 1 || choice > deleteOptions.size()) {
-	                System.out.println("Invalid choice. Please enter a valid number.");
-	            }
-	        } catch (NumberFormatException e) {
-	            // Handle cases where the user enters non-numeric input
-	            System.out.println("Invalid input. Please enter a valid number.");
-	        }
-	    }
+		// Display the list of recipes and allow the user to choose one for deletion
+		for (int i = 0; i < deleteOptions.size(); i++) {
+			Recipe recipe = deleteOptions.get(i);
+			System.out.println((i + 1) + ": " + recipe.getName());
+		}
 
-	    // Get the recipe to delete based on the user's choice
-	    Recipe toDelete = deleteOptions.get(choice - 1);
+		int choice = -1;
+		while (choice < 1 || choice > deleteOptions.size()) {
+			// Prompt the user to enter the number of the recipe they want to delete
+			System.out.print("Enter the number of the recipe you want to delete: ");
+			try {
+				choice = Integer.parseInt(in.nextLine());
 
-	    if (confirmDelete(toDelete)) {
-	        // If the user confirms the deletion, remove the recipe from the database
-	        rh.deleteRecipe(toDelete);
-	        System.out.println("Recipe deleted successfully.");
-	    } else {
-	        // If the user cancels the deletion, inform them and return to the main menu
-	        System.out.println("Deletion canceled. Returning to the main menu.");
-	    }
+				// Validate the user's choice to ensure it's within a valid range
+				if (choice < 1 || choice > deleteOptions.size()) {
+					System.out.println("Invalid choice. Please enter a valid number.");
+				}
+			} catch (NumberFormatException e) {
+				// Handle cases where the user enters non-numeric input
+				System.out.println("Invalid input. Please enter a valid number.");
+			}
+		}
+
+		// Get the recipe to delete based on the user's choice
+		Recipe toDelete = deleteOptions.get(choice - 1);
+
+		if (confirmDelete(toDelete)) {
+			// If the user confirms the deletion, remove the recipe from the database
+			rh.deleteRecipe(toDelete);
+			System.out.println("Recipe deleted successfully.");
+		} else {
+			// If the user cancels the deletion, inform them and return to the main menu
+			System.out.println("Deletion canceled. Returning to the main menu.");
+		}
 	}
-
 
 	/**
 	 * @return

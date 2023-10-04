@@ -1,8 +1,15 @@
 /**
- * @author tehli - lbellison
+ * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
- * Oct 1, 2023
+ * Oct 2, 2023
  */
+
+/**
+ * @author Adam Reese - amreese3
+ * CIS175 - Fall 2023
+ * Oct 2, 2023
+ */
+
 package model;
 
 import java.util.ArrayList;
@@ -14,12 +21,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
-
-/**
- * @author LILY ELLISON - LBELLISON
- * CIS175 - FALL 2023
- * Oct 1, 2023
- */
 
 @Entity
 @Table(name = "recipes")
