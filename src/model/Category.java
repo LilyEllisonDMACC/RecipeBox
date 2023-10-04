@@ -12,9 +12,6 @@
 
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,22 +25,44 @@ public class Category {
 	@GeneratedValue
 	@Column(name = "ID")
 	private int id;
+
 	@Column(name = "NAME")
 	private String name;
 
+	// Default constructor
 	public Category() {
 		super();
 	}
 
-	public Category(int id, String name) {
-		super();
-		this.id = id;
-		this.name = name;
-	}
-
+	// Constructor without id
 	public Category(String name) {
 		super();
 		this.name = name;
 	}
 
+	// Getter for id
+	public int getId() {
+		return id;
+	}
+
+	// Setter for id
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	// Getter for name
+	public String getName() {
+		return name;
+	}
+
+	// Setter for name
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	// Override toString() method
+	@Override
+	public String toString() {
+		return "Category [id=" + id + ", name=" + name + "]";
+	}
 }
