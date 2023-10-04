@@ -220,6 +220,7 @@ public class StartProgram {
 		String recipeName = in.nextLine();
 		List<Recipe> foundRecipes = rh.searchForRecipeByTitle(recipeName);
 
+		// Check if any recipes were found and display them
 		if (!foundRecipes.isEmpty()) {
 			displayFoundRecipes(foundRecipes);
 		} else {
@@ -231,31 +232,28 @@ public class StartProgram {
 	private static void searchByCategory() {
 		System.out.print("Enter the category: ");
 		String category = in.nextLine();
-		// Implement the search by category logic here
-		// Example: List<Recipe> foundRecipes = rh.searchForRecipeByCategory(category);
+		List<Recipe> foundRecipes = rh.searchForRecipeByCategory(category);
 
 		// Check if any recipes were found and display them
-		// if (!foundRecipes.isEmpty()) {
-		// displayFoundRecipes(foundRecipes);
-		// } else {
-		// System.out.println("No recipes found in the specified category.");
-		// }
+		if (!foundRecipes.isEmpty()) {
+			displayFoundRecipes(foundRecipes);
+		} else {
+			System.out.println("No recipes found in the specified category.");
+		}
 	}
 
 	// Function to search for recipes by ingredient
 	private static void searchByIngredient() {
 		System.out.print("Enter an ingredient: ");
 		String ingredient = in.nextLine();
-		// Implement the search by ingredient logic here
-		// Example: List<Recipe> foundRecipes =
-		// rh.searchForRecipeByIngredient(ingredient);
+		List<Recipe> foundRecipes = rh.searchForRecipeByIngredient(ingredient);
 
 		// Check if any recipes were found and display them
-		// if (!foundRecipes.isEmpty()) {
-		// displayFoundRecipes(foundRecipes);
-		// } else {
-		// System.out.println("No recipes found with the specified ingredient.");
-		// }
+		if (!foundRecipes.isEmpty()) {
+			displayFoundRecipes(foundRecipes);
+		} else {
+			System.out.println("No recipes found with the specified ingredient.");
+		}
 	}
 
 	// Function to search for recipes by serving size
@@ -263,15 +261,14 @@ public class StartProgram {
 		System.out.print("Enter the serving size: ");
 		int servingSize = in.nextInt();
 		in.nextLine(); // Consume the newline character
-		// Implement the search by serving size logic here
-		// Example: List<Recipe> foundRecipes =
-		// rh.searchForRecipeByServingSize(servingSize);
+		List<Recipe> foundRecipes = rh.searchForRecipeByServingSize(servingSize);
 
 		// Check if any recipes were found and display them
-		// if (!foundRecipes.isEmpty()) {
-		// displayFoundRecipes(foundRecipes);
-		// } else {
-		// System.out.println("No recipes found with the specified serving size.");
-		// }
+		if (!foundRecipes.isEmpty()) {
+			displayFoundRecipes(foundRecipes);
+		} else {
+			System.out.println("No recipes found with the specified serving size.");
+		}
 	}
+
 }
