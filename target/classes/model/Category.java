@@ -2,9 +2,7 @@
  * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
  * Oct 2, 2023
- */
-
-/**
+ * 
  * @author Adam Reese - amreese3
  * CIS175 - Fall 2023
  * Oct 2, 2023
@@ -19,7 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "category")
 public class Category {
 	@Id
 	@GeneratedValue

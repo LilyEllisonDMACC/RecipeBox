@@ -2,9 +2,7 @@
  * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
  * Oct 2, 2023
- */
-
-/**
+ *
  * @author Adam Reese - amreese3
  * CIS175 - Fall 2023
  * Oct 2, 2023
@@ -12,18 +10,14 @@
 
 package model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "ingredients")
+@Table(name = "ingredient")
 public class Ingredient {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private int id;
 
@@ -31,20 +25,22 @@ public class Ingredient {
 	private String name;
 
 	@Column(name = "QUANTITY")
-	private double quantity;
+	private String quantity;
 
 	@Column(name = "UNIT")
 	private String unit;
 
+	// Define the relationship to Recipe
+	@ManyToOne
+	@JoinColumn(name = "recipe_id")
+	private Recipe recipe;
+
 	// Default constructor
 	public Ingredient() {
-		super();
 	}
 
-	// Constructor with all fields
-	public Ingredient(int id, String name, double quantity, String unit) {
-		super();
-		this.id = id;
+	// Constructor with name, quantity, and unit
+	public Ingredient(String name, String quantity, String unit) {
 		this.name = name;
 		this.quantity = quantity;
 		this.unit = unit;
@@ -71,12 +67,12 @@ public class Ingredient {
 	}
 
 	// Getter for quantity
-	public double getQuantity() {
+	public String getQuantity() {
 		return quantity;
 	}
 
 	// Setter for quantity
-	public void setQuantity(double quantity) {
+	public void setQuantity(String quantity) {
 		this.quantity = quantity;
 	}
 

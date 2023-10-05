@@ -1,0 +1,5 @@
+model\Recipe.class
+StartProgram.class
+model\Category.class
+controller\RecipeHelper.class
+model\Ingredient.class

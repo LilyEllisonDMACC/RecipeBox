@@ -2,9 +2,7 @@
  * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
  * Oct 2, 2023
- */
-
-/**
+ *
  * @author Adam Reese - amreese3
  * CIS175 - Fall 2023
  * Oct 2, 2023
@@ -13,123 +11,113 @@
 package controller;
 
 import java.util.List;
-
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
+import exceptions.DatabaseAccessException;
 import model.Recipe;
 
 public class RecipeHelper {
 
-	static EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("RecipeBox");
+	private final EntityManager em;
+
+	// Constructor that takes an EntityManager as a parameter
+	public RecipeHelper(EntityManager em) {
+		this.em = em;
+	}
 
 	// Inserts a new recipe into the database
-	public void insertRecipe(Recipe toAdd) {
-		EntityManager em = emfactory.createEntityManager();
-		em.getTransaction().begin();
-		em.persist(toAdd);
-		em.getTransaction().commit();
-		em.close();
+	public void insertRecipe(Recipe toAdd) throws DatabaseAccessException {
+		try {
+			em.getTransaction().begin();
+			em.persist(toAdd);
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			em.getTransaction().rollback();
+			throw new DatabaseAccessException("Error inserting recipe: " + e.getMessage());
+		}
 	}
 
 	// Deletes a recipe from the database
-	public void deleteRecipe(Recipe toDelete) {
-		EntityManager em = emfactory.createEntityManager();
-		em.getTransaction().begin();
-		Recipe result = em.find(Recipe.class, toDelete.getId());
-		em.remove(result);
-		em.getTransaction().commit();
-		em.close();
-	}
-
-	// Updates an existing recipe in the database
-	public void updateRecipe(Recipe toEdit) {
-		EntityManager em = emfactory.createEntityManager();
-		em.getTransaction().begin();
-		em.merge(toEdit);
-		em.getTransaction().commit();
-		em.close();
-	}
-
-	// Searches for a recipe by its ID
-	public Recipe searchForRecipeById(int idToEdit) {
-		EntityManager em = emfactory.createEntityManager();
-		em.getTransaction().begin();
-		Recipe found = em.find(Recipe.class, idToEdit);
-		em.close();
-		return found;
+	public void deleteRecipe(Recipe toDelete) throws DatabaseAccessException {
+		try {
+			em.getTransaction().begin();
+			Recipe result = em.find(Recipe.class, toDelete.getId());
+			em.remove(result);
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			em.getTransaction().rollback();
+			throw new DatabaseAccessException("Error deleting recipe: " + e.getMessage());
+		}
 	}
 
 	// Retrieves a list of all recipes from the database
-	public List<Recipe> showAllRecipes() {
-		EntityManager em = emfactory.createEntityManager();
-		em.getTransaction().begin();
-
-		TypedQuery<Recipe> typedQuery = em.createQuery("SELECT r FROM Recipe r", Recipe.class);
-		List<Recipe> allRecipes = typedQuery.getResultList();
-
-		em.getTransaction().commit();
-		em.close();
-
-		return allRecipes;
+	public List<Recipe> showAllRecipes() throws DatabaseAccessException {
+		try {
+			TypedQuery<Recipe> typedQuery = em.createQuery("SELECT r FROM Recipe r", Recipe.class);
+			List<Recipe> allRecipes = typedQuery.getResultList();
+			return allRecipes;
+		} catch (Exception e) {
+			throw new DatabaseAccessException("Error retrieving recipes: " + e.getMessage());
+		}
 	}
 
 	// Searches for recipes by their name
-	public List<Recipe> searchForRecipeByTitle(String recipeName) {
-		EntityManager em = emfactory.createEntityManager();
-		em.getTransaction().begin();
-		TypedQuery<Recipe> typedQuery = em.createQuery("SELECT rb FROM Recipe rb WHERE rb.name = :selectedName",
-				Recipe.class);
-		typedQuery.setParameter("selectedName", recipeName);
+	public List<Recipe> searchForRecipeByTitle(String recipeName) throws DatabaseAccessException {
+		try {
+			TypedQuery<Recipe> typedQuery = em.createQuery("SELECT rb FROM Recipe rb WHERE rb.name = :selectedName",
+					Recipe.class);
+			typedQuery.setParameter("selectedName", recipeName);
 
-		List<Recipe> foundRecipes = typedQuery.getResultList();
-		em.close();
-		return foundRecipes;
+			return typedQuery.getResultList();
+		} catch (Exception e) {
+			throw new DatabaseAccessException("Error searching for recipe by title: " + e.getMessage());
+		}
 	}
 
 	// Searches for recipes by their category
-	public List<Recipe> searchForRecipeByCategory(String category) {
-		EntityManager em = emfactory.createEntityManager();
-		em.getTransaction().begin();
-		TypedQuery<Recipe> typedQuery = em
-				.createQuery("SELECT rb FROM Recipe rb WHERE :selectedCategory MEMBER OF rb.categories", Recipe.class);
-		typedQuery.setParameter("selectedCategory", category);
+	public List<Recipe> searchForRecipeByCategory(String category) throws DatabaseAccessException {
+		try {
+			TypedQuery<Recipe> typedQuery = em
+					.createQuery("SELECT rb FROM Recipe rb WHERE rb.category = :selectedCategory", Recipe.class);
+			typedQuery.setParameter("selectedCategory", category);
 
-		List<Recipe> foundRecipes = typedQuery.getResultList();
-		em.close();
-		return foundRecipes;
+			return typedQuery.getResultList();
+		} catch (Exception e) {
+			throw new DatabaseAccessException("Error searching for recipe by category: " + e.getMessage());
+		}
 	}
 
 	// Searches for recipes by their ingredient
-	public List<Recipe> searchForRecipeByIngredient(String ingredient) {
-		EntityManager em = emfactory.createEntityManager();
-		em.getTransaction().begin();
-		TypedQuery<Recipe> typedQuery = em.createQuery(
-				"SELECT rb FROM Recipe rb WHERE :selectedIngredient MEMBER OF rb.ingredients", Recipe.class);
-		typedQuery.setParameter("selectedIngredient", ingredient);
+	public List<Recipe> searchForRecipeByIngredient(String ingredient) throws DatabaseAccessException {
+		try {
+			TypedQuery<Recipe> typedQuery = em.createQuery(
+					"SELECT rb FROM Recipe rb WHERE :selectedIngredient MEMBER OF rb.ingredients", Recipe.class);
+			typedQuery.setParameter("selectedIngredient", ingredient);
 
-		List<Recipe> foundRecipes = typedQuery.getResultList();
-		em.close();
-		return foundRecipes;
+			return typedQuery.getResultList();
+		} catch (Exception e) {
+			throw new DatabaseAccessException("Error searching for recipe by ingredient: " + e.getMessage());
+		}
 	}
 
 	// Searches for recipes by their serving size
-	public List<Recipe> searchForRecipeByServingSize(int servingSize) {
-		EntityManager em = emfactory.createEntityManager();
-		em.getTransaction().begin();
-		TypedQuery<Recipe> typedQuery = em
-				.createQuery("SELECT rb FROM Recipe rb WHERE rb.servings = :selectedServingSize", Recipe.class);
-		typedQuery.setParameter("selectedServingSize", servingSize);
+	public List<Recipe> searchForRecipeByServingSize(int servingSize) throws DatabaseAccessException {
+		try {
+			TypedQuery<Recipe> typedQuery = em
+					.createQuery("SELECT rb FROM Recipe rb WHERE rb.servings = :selectedServingSize", Recipe.class);
+			typedQuery.setParameter("selectedServingSize", servingSize);
 
-		List<Recipe> foundRecipes = typedQuery.getResultList();
-		em.close();
-		return foundRecipes;
+			return typedQuery.getResultList();
+		} catch (Exception e) {
+			throw new DatabaseAccessException("Error searching for recipe by serving size: " + e.getMessage());
+		}
 	}
 
-	// Closes the EntityManagerFactory to release resources
-	public void cleanUp() {
-		emfactory.close();
+	// Closes the EntityManager
+	public void closeEntityManager() {
+		if (em != null && em.isOpen()) {
+			em.close();
+		}
 	}
 }

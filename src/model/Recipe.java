@@ -2,9 +2,7 @@
  * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
  * Oct 2, 2023
- */
-
-/**
+ * 
  * @author Adam Reese - amreese3
  * CIS175 - Fall 2023
  * Oct 2, 2023
@@ -12,54 +10,55 @@
 
 package model;
 
+import javax.persistence.*;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 @Entity
-@Table(name = "recipes")
 public class Recipe {
 	@Id
-	@GeneratedValue
-	@Column(name = "ID")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	@Column(name = "NAME")
 	private String name;
-	@Column(name = "SERVINGS")
 	private int servings;
-	@Column(name = "PREPTIME")
 	private int preparationTime;
 
-	@OneToMany
-	@JoinColumn(name = "RECIPE_ID")
+	@ManyToOne
+	private Category category;
+
+	// Modify this field to store a list of ingredients
+	@OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
 	private List<Ingredient> ingredients;
 
-	@ManyToMany
-	@JoinTable(name = "recipe_category", joinColumns = @JoinColumn(name = "recipe_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
-	private List<Category> categories;
+	// Add a field to store instructions
+	@Column(columnDefinition = "TEXT")
+	private String instructions;
 
 	public Recipe() {
-		super();
+		// Default constructor
 	}
 
-	// Constructor for creating a Recipe with a name, servings, preparation time,
-	// and a single Category.
-	public Recipe(String name, int servings, int preparationTime, Category category) {
-		super();
+	/**
+	 * Creates a new Recipe with the specified attributes.
+	 *
+	 * @param name            The name of the recipe.
+	 * @param servings        The number of servings the recipe yields.
+	 * @param preparationTime The preparation time in minutes.
+	 * @param category        The category of the recipe.
+	 * @param ingredients     The list of ingredients for the recipe.
+	 * @param instructions    The cooking instructions for the recipe.
+	 */
+	public Recipe(String name, int servings, int preparationTime, Category category, List<Ingredient> ingredients,
+			String instructions) {
 		this.name = name;
 		this.servings = servings;
 		this.preparationTime = preparationTime;
-		this.categories = List.of(category);
+		this.category = category;
+		this.ingredients = ingredients;
+		this.instructions = instructions;
 	}
 
+	// Getter and setter methods for id, name, servings, preparationTime, category,
+	// ingredients, and instructions
 	public int getId() {
 		return id;
 	}
@@ -92,6 +91,14 @@ public class Recipe {
 		this.preparationTime = preparationTime;
 	}
 
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
 	public List<Ingredient> getIngredients() {
 		return ingredients;
 	}
@@ -100,17 +107,27 @@ public class Recipe {
 		this.ingredients = ingredients;
 	}
 
-	public List<Category> getCategories() {
-		return categories;
+	public String getInstructions() {
+		return instructions;
 	}
 
-	public void setCategories(List<Category> categories) {
-		this.categories = categories;
+	public void setInstructions(String instructions) {
+		this.instructions = instructions;
 	}
 
+	// Other methods and properties as needed
+
+	// Displays the recipe details in a user-friendly way
 	@Override
 	public String toString() {
-		return "Recipe [id=" + id + ", name=" + name + ", servings=" + servings + ", preparationTime=" + preparationTime
-				+ "]";
+		StringBuilder ingredientList = new StringBuilder();
+		for (Ingredient ingredient : ingredients) {
+			ingredientList.append(ingredient.getName()).append(": ").append(ingredient.getQuantity()).append(" ")
+					.append(ingredient.getUnit()).append("\n");
+		}
+
+		return "Recipe #" + id + "\nName: " + name + "\nServings: " + servings + "\nPreparation Time: "
+				+ preparationTime + " minutes" + "\nCategory: " + category.getName() + "\nIngredients:\n"
+				+ ingredientList + "\nInstructions:\n" + instructions + "\n-----------------------";
 	}
 }
