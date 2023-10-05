@@ -30,11 +30,28 @@ public class RecipeHelper {
 	public void insertRecipe(Recipe toAdd) throws DatabaseAccessException {
 		try {
 			em.getTransaction().begin();
+			// Insert data into the database
 			em.persist(toAdd);
 			em.getTransaction().commit();
 		} catch (Exception e) {
 			em.getTransaction().rollback();
 			throw new DatabaseAccessException("Error inserting recipe: " + e.getMessage());
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+		}
+	}
+
+	// Updates a recipe in the database
+	public void updateRecipe(Recipe updatedRecipe) throws DatabaseAccessException {
+		try {
+			em.getTransaction().begin();
+			em.merge(updatedRecipe); // Use merge to update the existing recipe
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			em.getTransaction().rollback();
+			throw new DatabaseAccessException("Error updating recipe: " + e.getMessage());
 		}
 	}
 
@@ -44,6 +61,19 @@ public class RecipeHelper {
 			em.getTransaction().begin();
 			Recipe result = em.find(Recipe.class, toDelete.getId());
 			em.remove(result);
+			em.getTransaction().commit();
+
+			// Retrieve all recipes ordered by their IDs
+			TypedQuery<Recipe> renumberQuery = em.createQuery("SELECT r FROM Recipe r ORDER BY r.id", Recipe.class);
+			List<Recipe> recipesToRenumber = renumberQuery.getResultList();
+
+			// Renumber recipes consecutively starting from 1
+			int newId = 1;
+			em.getTransaction().begin();
+			for (Recipe recipeToRenumber : recipesToRenumber) {
+				recipeToRenumber.setId(newId++);
+				em.merge(recipeToRenumber);
+			}
 			em.getTransaction().commit();
 		} catch (Exception e) {
 			em.getTransaction().rollback();
@@ -55,8 +85,7 @@ public class RecipeHelper {
 	public List<Recipe> showAllRecipes() throws DatabaseAccessException {
 		try {
 			TypedQuery<Recipe> typedQuery = em.createQuery("SELECT r FROM Recipe r", Recipe.class);
-			List<Recipe> allRecipes = typedQuery.getResultList();
-			return allRecipes;
+			return typedQuery.getResultList();
 		} catch (Exception e) {
 			throw new DatabaseAccessException("Error retrieving recipes: " + e.getMessage());
 		}

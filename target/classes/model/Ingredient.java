@@ -32,7 +32,7 @@ public class Ingredient {
 
 	// Define the relationship to Recipe
 	@ManyToOne
-	@JoinColumn(name = "recipe_id")
+	@JoinColumn(name = "RECIPE_ID")
 	private Recipe recipe;
 
 	// Default constructor
