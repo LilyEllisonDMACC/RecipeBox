@@ -1,170 +1,140 @@
 /**
- * @author tehli - lbellison
+ * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
- * Oct 1, 2023
+ * Oct 2, 2023
+ * 
+ * @author Adam Reese - amreese3
+ * CIS175 - Fall 2023
+ * Oct 2, 2023
  */
+
 package model;
+
+import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Table;
-
-/**
- * @author LILY ELLISON - LBELLISON
- * CIS175 - FALL 2023
- * Oct 1, 2023
- */
-
 @Entity
-@Table(name="recipes")
 public class Recipe {
 	@Id
-	@GeneratedValue
-	@Column(name="ID")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	@Column(name="NAME")
+
 	private String name;
-	@Column(name="INSTRUCTIONS")
-	private String instructions;
-	@Column(name="SERVINGS")
 	private int servings;
-	@Column(name="PREPTIME")
-	private int preparationTime;
-	@JoinColumn(name="INGREDIENTS")
-	private List<Ingredient> ingredients;
-	@JoinColumn(name="CATEGORIES")
-	private List<Category> categories;
-	
+	private int preparationTime; // Changed to String
+
+	@ManyToOne
+	private Category category;
+
+	@ElementCollection
+	private List<String> ingredients;
+
+	@Column(columnDefinition = "TEXT")
+	private String instructions;
+
+	// No-argument constructor
 	public Recipe() {
-		super();
-	}
-	
-    public Recipe(int id, String name, String instructions, int servings, int preparationTime) {
-        super();
-    	this.id = id;
-        this.name = name;
-        this.instructions = instructions;
-        this.servings = servings;
-        this.preparationTime = preparationTime;
-        this.ingredients = new ArrayList<>();
-        this.categories = new ArrayList<>();
-    }
-	
-	public Recipe(String name, Category category) {
-		super();
-		this.name = name;
-		this.categories = new ArrayList<>();
 	}
 
 	/**
-	 * @return the id
+	 * Creates a new Recipe with the specified attributes.
+	 *
+	 * @param name            The name of the recipe.
+	 * @param servings        The number of servings the recipe yields.
+	 * @param preparationTime The preparation time as a String.
+	 * @param category        The category of the recipe.
+	 * @param ingredients     The list of ingredients as List<String>.
+	 * @param instructions    The cooking instructions for the recipe.
 	 */
+	public Recipe(String name, int servings, int preparationTime, Category category, List<String> ingredients,
+			String instructions) {
+		this.name = name;
+		this.servings = servings;
+		this.preparationTime = preparationTime;
+		this.category = category;
+		this.ingredients = ingredients;
+		this.instructions = instructions;
+	}
+
+	// Constructor that takes another Recipe object
+	public Recipe(Recipe otherRecipe) {
+		this.name = otherRecipe.name;
+		this.servings = otherRecipe.servings;
+		this.preparationTime = otherRecipe.preparationTime;
+		this.category = otherRecipe.category;
+		this.ingredients = new ArrayList<>(otherRecipe.ingredients);
+		this.instructions = otherRecipe.instructions;
+	}
+
+	// Getter and setter methods
 	public int getId() {
 		return id;
 	}
 
-	/**
-	 * @param id the id to set
-	 */
 	public void setId(int id) {
 		this.id = id;
 	}
 
-	/**
-	 * @return the name
-	 */
 	public String getName() {
 		return name;
 	}
 
-	/**
-	 * @param name the name to set
-	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	/**
-	 * @return the instructions
-	 */
-	public String getInstructions() {
-		return instructions;
-	}
-
-	/**
-	 * @param instructions the instructions to set
-	 */
-	public void setInstructions(String instructions) {
-		this.instructions = instructions;
-	}
-
-	/**
-	 * @return the servings
-	 */
 	public int getServings() {
 		return servings;
 	}
 
-	/**
-	 * @param servings the servings to set
-	 */
 	public void setServings(int servings) {
 		this.servings = servings;
 	}
 
-	/**
-	 * @return the preparationTime
-	 */
 	public int getPreparationTime() {
-		return preparationTime;
+		return preparationTime; // Changed return type to String
 	}
 
-	/**
-	 * @param preparationTime the preparationTime to set
-	 */
-	public void setPreparationTime(int preparationTime) {
+	public void setPreparationTime(int preparationTime) { // Changed parameter type to String
 		this.preparationTime = preparationTime;
 	}
 
-	/**
-	 * @return the ingredients
-	 */
-	public List<Ingredient> getIngredients() {
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public List<String> getIngredients() {
 		return ingredients;
 	}
 
-	/**
-	 * @param ingredients the ingredients to set
-	 */
-	public void setIngredients(List<Ingredient> ingredients) {
+	public void setIngredients(List<String> ingredients) { // Changed parameter type to List<String>
 		this.ingredients = ingredients;
 	}
 
-	/**
-	 * @return the categories
-	 */
-	public List<Category> getCategories() {
-		return categories;
+	public String getInstructions() {
+		return instructions;
 	}
 
-	/**
-	 * @param categories the categories to set
-	 */
-	public void setCategories(List<Category> categories) {
-		this.categories = categories;
+	public void setInstructions(String instructions) {
+		this.instructions = instructions;
 	}
 
+	// Displays the recipe details in a user-friendly way
 	@Override
 	public String toString() {
-		return "Recipe [id=" + id + ", name=" + name + ", instructions=" + instructions + ", servings=" + servings
-				+ ", preparationTime=" + preparationTime + "]";
+		StringBuilder ingredientList = new StringBuilder();
+		for (String ingredient : ingredients) { // Iterating over List<String>
+			ingredientList.append(ingredient).append("\n");
+		}
+
+		return "\nName: " + name + "\nServings: " + servings + "\nPreparation Time: " + preparationTime + " minutes"
+				+ "\nCategory: " + category.getName() + "\nIngredients:\n" + ingredientList + "\nInstructions:\n"
+				+ instructions + "\n---------------------------";
 	}
-
 }
-

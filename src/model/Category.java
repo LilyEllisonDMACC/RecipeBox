@@ -1,12 +1,14 @@
 /**
- * @author tehli - lbellison
+ * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
- * Oct 3, 2023
+ * Oct 2, 2023
+ * 
+ * @author Adam Reese - amreese3
+ * CIS175 - Fall 2023
+ * Oct 2, 2023
  */
-package model;
 
-import java.util.ArrayList;
-import java.util.List;
+package model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,35 +16,51 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-/**
- * @author LILY ELLISON - LBELLISON
- * CIS175 - FALL 2023
- * Oct 3, 2023
- */
-
 @Entity
-@Table(name="categories")
+@Table(name = "category")
 public class Category {
 	@Id
 	@GeneratedValue
-	@Column(name="ID")
+	@Column(name = "ID")
 	private int id;
-    @Column(name="NAME")
-	private String name;
-    
-    public Category() {
-    	super();
-    }
-    
-    public Category(int id, String name) {
-    	super();
-        this.id = id;
-        this.name = name;
-    }
-    
-    public Category(String name) {
-    	super();
-    	this.name = name;
-    }
 
+	@Column(name = "NAME")
+	private String name;
+
+	// Default constructor
+	public Category() {
+		super();
+	}
+
+	// Constructor without id
+	public Category(String name) {
+		super();
+		this.name = name;
+	}
+
+	// Getter for id
+	public int getId() {
+		return id;
+	}
+
+	// Setter for id
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	// Getter for name
+	public String getName() {
+		return name;
+	}
+
+	// Setter for name
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	// Override toString() method
+	@Override
+	public String toString() {
+		return "Category [id=" + id + ", name=" + name + "]";
+	}
 }
