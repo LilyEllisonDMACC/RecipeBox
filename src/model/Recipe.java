@@ -10,10 +10,9 @@
 
 package model;
 
-import javax.persistence.*;
-
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.*;
 
 @Entity
 public class Recipe {
@@ -23,16 +22,16 @@ public class Recipe {
 
 	private String name;
 	private int servings;
-	private int preparationTime; // Changed to String
+	private int preparationTime;
 
 	@ManyToOne
 	private Category category;
 
-	@ElementCollection
-	private List<String> ingredients;
-
 	@Column(columnDefinition = "TEXT")
 	private String instructions;
+
+	@ElementCollection
+	private List<String> ingredients;
 
 	// No-argument constructor
 	public Recipe() {
@@ -43,18 +42,16 @@ public class Recipe {
 	 *
 	 * @param name            The name of the recipe.
 	 * @param servings        The number of servings the recipe yields.
-	 * @param preparationTime The preparation time as a String.
+	 * @param preparationTime The preparation time as an int.
 	 * @param category        The category of the recipe.
-	 * @param ingredients     The list of ingredients as List<String>.
+	 * @param ingredients     The list of ingredients as List<IngredientQuantity>.
 	 * @param instructions    The cooking instructions for the recipe.
 	 */
-	public Recipe(String name, int servings, int preparationTime, Category category, List<String> ingredients,
-			String instructions) {
+	public Recipe(String name, int servings, int preparationTime, Category category, String instructions) {
 		this.name = name;
 		this.servings = servings;
 		this.preparationTime = preparationTime;
 		this.category = category;
-		this.ingredients = ingredients;
 		this.instructions = instructions;
 	}
 
@@ -64,7 +61,6 @@ public class Recipe {
 		this.servings = otherRecipe.servings;
 		this.preparationTime = otherRecipe.preparationTime;
 		this.category = otherRecipe.category;
-		this.ingredients = new ArrayList<>(otherRecipe.ingredients);
 		this.instructions = otherRecipe.instructions;
 	}
 
@@ -94,10 +90,10 @@ public class Recipe {
 	}
 
 	public int getPreparationTime() {
-		return preparationTime; // Changed return type to String
+		return preparationTime;
 	}
 
-	public void setPreparationTime(int preparationTime) { // Changed parameter type to String
+	public void setPreparationTime(int preparationTime) {
 		this.preparationTime = preparationTime;
 	}
 
@@ -113,7 +109,7 @@ public class Recipe {
 		return ingredients;
 	}
 
-	public void setIngredients(List<String> ingredients) { // Changed parameter type to List<String>
+	public void setIngredients(List<String> ingredients) {
 		this.ingredients = ingredients;
 	}
 
@@ -129,10 +125,6 @@ public class Recipe {
 	@Override
 	public String toString() {
 		StringBuilder ingredientList = new StringBuilder();
-		for (String ingredient : ingredients) { // Iterating over List<String>
-			ingredientList.append(ingredient).append("\n");
-		}
-
 		return "\nName: " + name + "\nServings: " + servings + "\nPreparation Time: " + preparationTime + " minutes"
 				+ "\nCategory: " + category.getName() + "\nIngredients:\n" + ingredientList + "\nInstructions:\n"
 				+ instructions + "\n---------------------------";

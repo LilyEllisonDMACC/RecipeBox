@@ -1,3 +1,4 @@
+
 /**
  * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
@@ -13,6 +14,7 @@ package controller;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.Scanner;
 
 import exceptions.DatabaseAccessException;
 import model.Ingredient;
@@ -22,8 +24,8 @@ public class IngredientHelper {
 
 	private final EntityManager em;
 
-	// Constructor that takes an EntityManager as a parameter
-	public IngredientHelper(EntityManager em) {
+	// Constructor that takes an EntityManager and Scanner as parameters
+	public IngredientHelper(EntityManager em, Scanner scanner) {
 		this.em = em;
 	}
 
@@ -31,7 +33,7 @@ public class IngredientHelper {
 	public void insertIngredient(Ingredient toAdd) throws DatabaseAccessException {
 		try {
 			// Check if the ingredient already exists
-			Ingredient existingIngredient = getIngredientByName(toAdd.getName());
+			Ingredient existingIngredient = findIngredientByName(toAdd.getName());
 
 			// If it already exists, you can choose to update it or skip adding
 			if (existingIngredient != null) {
@@ -52,38 +54,49 @@ public class IngredientHelper {
 		}
 	}
 
-	// Deletes an ingredient from the database
-	public void deleteIngredient(Ingredient toDelete) throws DatabaseAccessException {
+	// Helper method to delete an ingredient
+	public void deleteIngredient(Ingredient toDelete, Scanner scanner) {
 		try {
-			// Check if the ingredient is used in any recipe
-			if (isIngredientUsedInRecipes(toDelete)) {
+			System.out.print("Enter the name of the ingredient to delete: ");
+			String ingredientName = scanner.nextLine();
+
+			// Check if the ingredient exists in the database
+			Ingredient existingIngredient = findIngredientByName(ingredientName);
+
+			// If the ingredient doesn't exist, display an error message and return
+			if (existingIngredient == null) {
+				System.out.println("Ingredient not found in the database.");
+				return;
+			}
+
+			// Check if the ingredient is used in any recipes
+			if (isIngredientUsedInRecipes(existingIngredient.getName())) {
 				System.out.println("Ingredient is used in one or more recipes and cannot be deleted.");
 			} else {
+				// If the ingredient exists and is not used in any recipes, proceed to delete it
 				em.getTransaction().begin();
 				Ingredient result = em.find(Ingredient.class, toDelete.getId());
 				em.remove(result);
 				em.getTransaction().commit();
-				System.out.println("Ingredient deleted successfully.");
+				System.out.println("Ingredient deleted successfully!");
 			}
-		} catch (Exception e) {
-			em.getTransaction().rollback();
-			throw new DatabaseAccessException("Error deleting ingredient: " + e.getMessage());
+		} catch (DatabaseAccessException e) {
+			System.out.println("Error deleting ingredient: " + e.getMessage());
 		}
 	}
 
-	// Check if an ingredient is used in any recipes
-	private boolean isIngredientUsedInRecipes(Ingredient ingredient) {
+	// Check if an ingredient with a given name is used in any recipes
+	public boolean isIngredientUsedInRecipes(String ingredientName) {
 		try {
 			TypedQuery<Recipe> typedQuery = em
-					.createQuery("SELECT r FROM Recipe r WHERE :ingredient MEMBER OF r.ingredients", Recipe.class);
-			typedQuery.setParameter("ingredient", ingredient);
+					.createQuery("SELECT r FROM Recipe r WHERE :ingredientName MEMBER OF r.ingredients", Recipe.class);
+			typedQuery.setParameter("ingredientName", ingredientName);
 
 			List<Recipe> result = typedQuery.getResultList();
-			return !result.isEmpty(); // Return true if used in any recipes, false otherwise
+			return !result.isEmpty();
 		} catch (Exception e) {
-			// Handle any exceptions that may occur during the query
 			e.printStackTrace();
-			return false; // Return false on error (you can handle this differently if needed)
+			return false;
 		}
 	}
 
@@ -98,7 +111,7 @@ public class IngredientHelper {
 	}
 
 	// Searches for an ingredient by its name
-	public Ingredient getIngredientByName(String ingredientName) throws DatabaseAccessException {
+	public Ingredient findIngredientByName(String ingredientName) throws DatabaseAccessException {
 		try {
 			TypedQuery<Ingredient> typedQuery = em
 					.createQuery("SELECT i FROM Ingredient i WHERE i.name = :selectedName", Ingredient.class);
