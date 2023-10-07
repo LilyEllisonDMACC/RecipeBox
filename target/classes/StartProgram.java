@@ -47,15 +47,22 @@ public final class StartProgram {
 	// Main method
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
+
+		// Prompt the user for their MySQL password
 		System.out.print("Enter your MySQL password: ");
+
+		// Get the user's password
 		String password = scanner.nextLine();
 
+		// Create a map to hold the database connection properties
 		Map<String, String> properties = new HashMap<String, String>();
 		properties.put("javax.persistence.jdbc.password", password);
 
+		// Create an EntityManagerFactory and EntityManager
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("RecipeBox", properties);
 		EntityManager entityManager = emf.createEntityManager();
 
+		// Create a new StartProgram object and run the menu
 		try {
 			StartProgram program = new StartProgram(entityManager);
 			program.runMenu(scanner);

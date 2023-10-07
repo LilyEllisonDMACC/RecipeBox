@@ -5,6 +5,7 @@
 		<class>model.Recipe</class>
 		<class>model.Ingredient</class>
 		<class>model.Category</class>
+		<class>util.DateConverter</class>
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
 			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/recipebox"/>

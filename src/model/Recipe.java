@@ -1,18 +1,21 @@
 /**
  * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
- * Oct 2, 2023
+ * Oct 7, 2023
  * 
  * @author Adam Reese - amreese3
  * CIS175 - Fall 2023
- * Oct 2, 2023
+ * Oct 7, 2023
  */
 
 package model;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.persistence.*;
+
+import util.DateConverter;
 
 @Entity
 public class Recipe {
@@ -37,6 +40,12 @@ public class Recipe {
 	// One-to-many relationship with Ingredient
 	@OneToMany(cascade = CascadeType.PERSIST)
 	private List<Ingredient> ingredients;
+
+	@Convert(converter = DateConverter.class)
+	private java.util.Date dateAdded;
+
+	@Convert(converter = DateConverter.class)
+	private java.util.Date lastModified;
 
 	// No-argument constructor
 	public Recipe() {
@@ -127,12 +136,32 @@ public class Recipe {
 		this.instructions = instructions;
 	}
 
+	@PrePersist
+	protected void onCreate() {
+		dateAdded = new java.util.Date();
+		lastModified = dateAdded;
+	}
+
+	@PreUpdate
+	protected void onUpdate() {
+		lastModified = new java.util.Date();
+	}
+
 	// Displays the recipe details in a user-friendly way
 	@Override
 	public String toString() {
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
 		StringBuilder ingredientList = new StringBuilder();
-		return "\nName: " + name + "\nServings: " + servings + "\nPreparation Time: " + preparationTime + " minutes"
-				+ "\nCategory: " + category.getName() + "\nIngredients:\n" + ingredientList + "\nInstructions:\n"
+		for (Ingredient ingredient : this.ingredients) { // Assuming 'ingredients' is your List<Ingredient>
+			ingredientList.append(ingredient.getName()).append("\n");
+		}
+
+		return "\n---------------------------" + "\nRecipe: " + name + "\n---------------------------" + "\nCategory: "
+				+ category.getName() + "\nServings: " + servings + "\nPreparation Time: " + preparationTime + " minutes"
+				+ "\nDate Added: " + (dateAdded != null ? sdf.format(dateAdded) : "N/A") + "\nLast Modified: "
+				+ (lastModified != null ? sdf.format(lastModified) : "N/A") + "\n---------------------------"
+				+ "\nIngredients:\n" + ingredientList + "\n---------------------------" + "\nInstructions:\n"
 				+ instructions + "\n---------------------------";
 	}
 }
