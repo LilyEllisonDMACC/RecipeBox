@@ -23,7 +23,9 @@ import javax.persistence.Persistence;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 // Main class
@@ -44,11 +46,17 @@ public final class StartProgram {
 
 	// Main method
 	public static void main(String[] args) {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("RecipeBox");
+		Scanner scanner = new Scanner(System.in);
+		System.out.print("Enter your MySQL password: ");
+		String password = scanner.nextLine();
+
+		Map<String, String> properties = new HashMap<String, String>();
+		properties.put("javax.persistence.jdbc.password", password);
+
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("RecipeBox", properties);
 		EntityManager entityManager = emf.createEntityManager();
 
-		// Create a new StartProgram object and run the main menu
-		try (Scanner scanner = new Scanner(System.in)) {
+		try {
 			StartProgram program = new StartProgram(entityManager);
 			program.runMenu(scanner);
 		} catch (Exception e) {
@@ -60,6 +68,7 @@ public final class StartProgram {
 			if (emf.isOpen()) {
 				emf.close();
 			}
+			scanner.close();
 		}
 	}
 
