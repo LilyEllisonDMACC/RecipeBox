@@ -16,22 +16,27 @@ import javax.persistence.*;
 
 @Entity
 public class Recipe {
+	// Primary key and auto-generated value
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
+	// Attributes
 	private String name;
 	private int servings;
 	private int preparationTime;
 
+	// Many-to-one relationship with Category
 	@ManyToOne
 	private Category category;
 
+	// One-to-many relationship with Ingredient
 	@Column(columnDefinition = "TEXT")
 	private String instructions;
 
-	@ElementCollection
-	private List<String> ingredients;
+	// One-to-many relationship with Ingredient
+	@OneToMany(cascade = CascadeType.PERSIST)
+	private List<Ingredient> ingredients;
 
 	// No-argument constructor
 	public Recipe() {
@@ -44,9 +49,10 @@ public class Recipe {
 	 * @param servings        The number of servings the recipe yields.
 	 * @param preparationTime The preparation time as an int.
 	 * @param category        The category of the recipe.
-	 * @param ingredients     The list of ingredients as List<IngredientQuantity>.
 	 * @param instructions    The cooking instructions for the recipe.
 	 */
+
+	// Constructor that takes all attributes
 	public Recipe(String name, int servings, int preparationTime, Category category, String instructions) {
 		this.name = name;
 		this.servings = servings;
@@ -105,11 +111,11 @@ public class Recipe {
 		this.category = category;
 	}
 
-	public List<String> getIngredients() {
+	public List<Ingredient> getIngredients() {
 		return ingredients;
 	}
 
-	public void setIngredients(List<String> ingredients) {
+	public void setIngredients(List<Ingredient> ingredients) {
 		this.ingredients = ingredients;
 	}
 
