@@ -1,38 +1,51 @@
 /**
  * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
- * Oct 2, 2023
+ * Oct 7, 2023
  * 
  * @author Adam Reese - amreese3
  * CIS175 - Fall 2023
- * Oct 2, 2023
+ * Oct 7, 2023
  */
 
 package model;
 
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 import javax.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import util.DateConverter;
 
 @Entity
 public class Recipe {
+	// Primary key and auto-generated value
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
+	// Attributes
 	private String name;
 	private int servings;
-	private int preparationTime; // Changed to String
+	private int preparationTime;
 
+	// Many-to-one relationship with Category
 	@ManyToOne
 	private Category category;
 
-	@ElementCollection
-	private List<String> ingredients;
-
+	// One-to-many relationship with Ingredient
 	@Column(columnDefinition = "TEXT")
 	private String instructions;
+
+	// One-to-many relationship with Ingredient
+	@OneToMany(cascade = CascadeType.PERSIST)
+	private List<Ingredient> ingredients;
+
+	@Convert(converter = DateConverter.class)
+	private java.util.Date dateAdded;
+
+	@Convert(converter = DateConverter.class)
+	private java.util.Date lastModified;
 
 	// No-argument constructor
 	public Recipe() {
@@ -43,18 +56,17 @@ public class Recipe {
 	 *
 	 * @param name            The name of the recipe.
 	 * @param servings        The number of servings the recipe yields.
-	 * @param preparationTime The preparation time as a String.
+	 * @param preparationTime The preparation time as an int.
 	 * @param category        The category of the recipe.
-	 * @param ingredients     The list of ingredients as List<String>.
 	 * @param instructions    The cooking instructions for the recipe.
 	 */
-	public Recipe(String name, int servings, int preparationTime, Category category, List<String> ingredients,
-			String instructions) {
+
+	// Constructor that takes all attributes
+	public Recipe(String name, int servings, int preparationTime, Category category, String instructions) {
 		this.name = name;
 		this.servings = servings;
 		this.preparationTime = preparationTime;
 		this.category = category;
-		this.ingredients = ingredients;
 		this.instructions = instructions;
 	}
 
@@ -64,7 +76,6 @@ public class Recipe {
 		this.servings = otherRecipe.servings;
 		this.preparationTime = otherRecipe.preparationTime;
 		this.category = otherRecipe.category;
-		this.ingredients = new ArrayList<>(otherRecipe.ingredients);
 		this.instructions = otherRecipe.instructions;
 	}
 
@@ -94,10 +105,10 @@ public class Recipe {
 	}
 
 	public int getPreparationTime() {
-		return preparationTime; // Changed return type to String
+		return preparationTime;
 	}
 
-	public void setPreparationTime(int preparationTime) { // Changed parameter type to String
+	public void setPreparationTime(int preparationTime) {
 		this.preparationTime = preparationTime;
 	}
 
@@ -109,11 +120,11 @@ public class Recipe {
 		this.category = category;
 	}
 
-	public List<String> getIngredients() {
+	public List<Ingredient> getIngredients() {
 		return ingredients;
 	}
 
-	public void setIngredients(List<String> ingredients) { // Changed parameter type to List<String>
+	public void setIngredients(List<Ingredient> ingredients) {
 		this.ingredients = ingredients;
 	}
 
@@ -125,16 +136,32 @@ public class Recipe {
 		this.instructions = instructions;
 	}
 
+	@PrePersist
+	protected void onCreate() {
+		dateAdded = new java.util.Date();
+		lastModified = dateAdded;
+	}
+
+	@PreUpdate
+	protected void onUpdate() {
+		lastModified = new java.util.Date();
+	}
+
 	// Displays the recipe details in a user-friendly way
 	@Override
 	public String toString() {
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
 		StringBuilder ingredientList = new StringBuilder();
-		for (String ingredient : ingredients) { // Iterating over List<String>
-			ingredientList.append(ingredient).append("\n");
+		for (Ingredient ingredient : this.ingredients) { // Assuming 'ingredients' is your List<Ingredient>
+			ingredientList.append(ingredient.getName()).append("\n");
 		}
 
-		return "\nName: " + name + "\nServings: " + servings + "\nPreparation Time: " + preparationTime + " minutes"
-				+ "\nCategory: " + category.getName() + "\nIngredients:\n" + ingredientList + "\nInstructions:\n"
+		return "\n---------------------------" + "\nRecipe: " + name + "\n---------------------------" + "\nCategory: "
+				+ category.getName() + "\nServings: " + servings + "\nPreparation Time: " + preparationTime + " minutes"
+				+ "\nDate Added: " + (dateAdded != null ? sdf.format(dateAdded) : "N/A") + "\nLast Modified: "
+				+ (lastModified != null ? sdf.format(lastModified) : "N/A") + "\n---------------------------"
+				+ "\nIngredients:\n" + ingredientList + "\n---------------------------" + "\nInstructions:\n"
 				+ instructions + "\n---------------------------";
 	}
 }

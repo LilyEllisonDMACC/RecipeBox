@@ -2,11 +2,11 @@
 /**
  * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
- * Oct 2, 2023
+ * Oct 6, 2023
  *
  * @author Adam Reese - amreese3
  * CIS175 - Fall 2023
- * Oct 2, 2023
+ * Oct 6, 2023
  */
 
 import controller.CategoryHelper;
@@ -21,19 +21,22 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
-// Class to run the program
+// Main class
 public final class StartProgram {
-	private final static Scanner scanner = new Scanner(System.in);
-	private static RecipeHelper recipeHelper = null;
-	private static IngredientHelper ingredientHelper = null;
-	private static CategoryHelper categoryHelper = null;
+	private static RecipeHelper recipeHelper;
+	private static IngredientHelper ingredientHelper;
+	private static CategoryHelper categoryHelper;
+	private static EntityManager entityManager;
+	private static Scanner scanner = new Scanner(System.in);
 
-	private static EntityManager entityManager = null; // Add this line
-
-	// Method to initialize the program
+	// Constructor to initialize the program
 	public StartProgram(EntityManager entityManager) {
 		recipeHelper = new RecipeHelper(entityManager);
 		categoryHelper = new CategoryHelper(entityManager);
@@ -43,12 +46,26 @@ public final class StartProgram {
 
 	// Main method
 	public static void main(String[] args) {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("RecipeBox");
+		Scanner scanner = new Scanner(System.in);
+
+		// Prompt the user for their MySQL password
+		System.out.print("Enter your MySQL password: ");
+
+		// Get the user's password
+		String password = scanner.nextLine();
+
+		// Create a map to hold the database connection properties
+		Map<String, String> properties = new HashMap<String, String>();
+		properties.put("javax.persistence.jdbc.password", password);
+
+		// Create an EntityManagerFactory and EntityManager
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("RecipeBox", properties);
 		EntityManager entityManager = emf.createEntityManager();
 
+		// Create a new StartProgram object and run the menu
 		try {
-			// Call the runMenu method directly using the class name
-			StartProgram.runMenu();
+			StartProgram program = new StartProgram(entityManager);
+			program.runMenu(scanner);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -58,28 +75,29 @@ public final class StartProgram {
 			if (emf.isOpen()) {
 				emf.close();
 			}
+			scanner.close();
 		}
 	}
 
 	// Helper method to handle the main menu
-	public static void runMenu() {
+	public void runMenu(Scanner scanner) {
 		boolean continueRunning = true;
 		System.out.println("--- Welcome to our awesome recipe box! ---");
 
 		// Main menu loop
 		while (continueRunning) {
 			System.out.println("*  Select an option:");
-			System.out.println("*  1 -- Add a recipe");
-			System.out.println("*  2 -- Edit a recipe");
-			System.out.println("*  3 -- Delete a recipe");
-			System.out.println("*  4 -- Search for recipes");
-			System.out.println("*  5 -- View the recipe list");
-			System.out.println("*  6 -- Manage Ingredients");
-			System.out.println("*  7 -- Manage Categories");
-			System.out.println("*  8 -- Exit the program");
-			System.out.print("*  Your selection: ");
+			System.out.println("   1 - Add a new recipe");
+			System.out.println("   2 - Edit a recipe");
+			System.out.println("   3 - Delete a recipe");
+			System.out.println("   4 - Search for recipes");
+			System.out.println("   5 - View recipe list");
+			System.out.println("   6 - Manage ingredients");
+			System.out.println("   7 - Manage categories");
+			System.out.println("   8 - Quit");
 
 			// Get the user's input
+			System.out.print("*  Your selection: ");
 			String input = scanner.nextLine();
 
 			// Handle the user's input
@@ -104,9 +122,11 @@ public final class StartProgram {
 					viewRecipeList();
 					break;
 				case 6:
-					manageIngredients();
+					manageIngredients(this);
 					break;
 				case 7:
+					// Initialize categoryHelper with the EntityManager
+					categoryHelper = new CategoryHelper(entityManager);
 					manageCategories();
 					break;
 				case 8:
@@ -133,76 +153,68 @@ public final class StartProgram {
 		String name = scanner.nextLine();
 		int servings = getPositiveIntegerInput("Enter the number of servings: ");
 		int preparationTime = getPositiveIntegerInput("Enter the preparation time in minutes: ");
-
-		// Collect category input
 		System.out.print("Enter a category: ");
 		String categoryName = scanner.nextLine();
 
 		// Check if the category already exists in the database and create it if needed
 		Category foundCategory;
-
-		// Check if the category already exists in the database
 		foundCategory = categoryHelper.getCategoryByName(categoryName);
 
-		// If the category doesn't exist, create it
 		if (foundCategory == null) {
 			foundCategory = new Category(categoryName);
 			categoryHelper.addCategory(foundCategory);
 		}
 
-		// Collect ingredients and instructions
-		List<String> ingredients = new ArrayList<>();
+		// Declare a List<Ingredient> to hold the ingredients
+		List<Ingredient> ingredients = new ArrayList<>();
+
+		// Declare a List<String> to hold the instructions
 		List<String> instructions = new ArrayList<>();
 
-		// Loop to add ingredients
+		// Loop to collect ingredients from the user
 		while (true) {
-			System.out.println("Please add ingredients (or type 'done' to finish). Use plural form if needed.");
-			String ingredientName = scanner.nextLine();
+			System.out.print("Please add ingredients (or type 'done' to finish). Use plural form if needed.\n");
+			String ingredientLine = scanner.nextLine();
 
-			if (ingredientName.equalsIgnoreCase("done")) {
-				break; // Exit the loop if 'done' is entered
+			// Check if the user is done adding ingredients
+			if (ingredientLine.equalsIgnoreCase("done")) {
+				break;
 			}
 
-			// Check if the ingredient already exists in the list
-			boolean ingredientExists = false;
-			for (String existingIngredient : ingredients) {
-				if (existingIngredient.equalsIgnoreCase(ingredientName)) {
-					ingredientExists = true;
-					break;
-				}
-			}
-			// If the ingredient doesn't exist, add it to the list
-			if (!ingredientExists) {
-				System.out.println("Ingredient doesn't exist, creating it...");
-				ingredients.add(ingredientName);
-			}
+			// Ask the user for the quantity and unit type
+			System.out.print("Enter the quantity and unit type (e.g., '1 cup of') for '" + ingredientLine + "': ");
+			String ingredientQuantity = scanner.nextLine();
+
+			// Combine the ingredient quantity and name into a single string
+			String ingredientInfo = ingredientQuantity + " " + ingredientLine;
+
+			// Create an Ingredient object and add it to the list
+			Ingredient ingredient = new Ingredient(ingredientInfo);
+			ingredients.add(ingredient);
 		}
 
-		// Loop to add instructions
+		// Loop to collect instructions from the user
 		while (true) {
 			System.out.println("Add an instruction (or type 'done' to finish): ");
 			String instruction = scanner.nextLine();
 
+			// Check if the user is done adding instructions
 			if (instruction.equalsIgnoreCase("done")) {
-				break; // Exit the loop if 'done' is entered
+				break;
 			}
-
 			// Add the instruction to the list
 			instructions.add(instruction);
 		}
 
 		// Create a new recipe and insert it into the database
-		Recipe newRecipe = new Recipe(name, servings, preparationTime, foundCategory, ingredients,
-				String.join("\n", instructions));
-
-		// Begin a transaction before inserting the recipe
-		em.getTransaction().begin();
+		Recipe newRecipe = new Recipe(name, servings, preparationTime, foundCategory, String.join("\n", instructions));
 
 		// Insert the recipe into the database
-		recipeHelper.insertRecipe(newRecipe);
-
-		// Commit the transaction
-		em.getTransaction().commit();
+		try {
+			recipeHelper.insertRecipe(newRecipe, ingredients);
+		} catch (DatabaseAccessException e) {
+			System.out.println("Error: " + e.getMessage());
+		}
 
 		System.out.println("Recipe added successfully!");
 
@@ -217,6 +229,7 @@ public final class StartProgram {
 			List<Recipe> recipes = recipeHelper.showAllRecipes();
 			System.out.println("Select a recipe to edit:");
 
+			// Display the list of recipes
 			for (int i = 0; i < recipes.size(); i++) {
 				System.out.println((i + 1) + ": " + recipes.get(i).getName());
 			}
@@ -228,17 +241,22 @@ public final class StartProgram {
 			if (choice >= 1 && choice <= recipes.size()) {
 				Recipe recipeToEdit = recipes.get(choice - 1);
 
-				// Display the recipe to edit
-				while (true) {
-					System.out.println("Enter the number for the aspect to edit:");
-					System.out.println("1: Name");
-					System.out.println("2: Servings");
-					System.out.println("3: Preparation Time");
-					System.out.println("4: Ingredients");
-					System.out.println("5: Instructions");
-					System.out.println("6: Done Editing");
-					int editChoice = getPositiveIntegerInput("Your selection: ");
+				// Keep track of whether the user wants to continue editing
+				boolean continueEditing = true;
 
+				// Display the recipe to edit
+				while (continueEditing) {
+					System.out.println("  --- Edit Recipe ---");
+					System.out.println("   1: Name");
+					System.out.println("   2: Servings");
+					System.out.println("   3: Preparation Time");
+					System.out.println("   4: Category");
+					System.out.println("   5: Ingredients");
+					System.out.println("   6: Instructions");
+					System.out.println("   7: Done Editing");
+					int editChoice = getPositiveIntegerInput("*  Your selection: ");
+
+					// Handle the user's selection
 					switch (editChoice) {
 					case 1:
 						// Edit name
@@ -264,40 +282,60 @@ public final class StartProgram {
 						System.out.println("Preparation Time updated to: " + newPrepTime + " minutes");
 						break;
 					case 4:
+						// Edit category
+						System.out.println("Current Category: " + recipeToEdit.getCategory().getName());
+						System.out.print("Enter the new category: ");
+						String newCategoryName = scanner.nextLine();
+						Category newCategory = new Category(newCategoryName);
+						recipeToEdit.setCategory(newCategory);
+						System.out.println("Category updated to: " + newCategoryName);
+						break;
+					case 5:
 						// Edit ingredients
 						System.out.println("Current Ingredients:");
-						List<String> currentIngredients = recipeToEdit.getIngredients();
+						List<Ingredient> currentIngredients = recipeToEdit.getIngredients();
 						for (int i = 0; i < currentIngredients.size(); i++) {
-							System.out.println((i + 1) + ": " + currentIngredients.get(i));
+							System.out.println((i + 1) + ": " + currentIngredients.get(i).getName());
 						}
 						System.out.println("Enter 'done' to finish editing ingredients.");
 
 						// Loop to add ingredients
-						List<String> newIngredients = new ArrayList<>();
+						List<Ingredient> newIngredients = new ArrayList<>();
 						while (true) {
-							String newIngredient = scanner.nextLine();
-							if (newIngredient.equalsIgnoreCase("done")) {
+							String newIngredientName = scanner.nextLine();
+							if (newIngredientName.equalsIgnoreCase("done")) {
 								break;
 							} else {
+								Ingredient newIngredient = new Ingredient(newIngredientName);
 								newIngredients.add(newIngredient);
-								System.out.println("Ingredient added: " + newIngredient);
+								System.out.println("Ingredient added: " + newIngredientName);
 							}
 						}
 						recipeToEdit.setIngredients(newIngredients);
 						break;
-					case 5:
+					case 6:
 						// Edit instructions
 						System.out.println("Current Instructions:");
 						System.out.println(recipeToEdit.getInstructions());
 						System.out.println("Enter the new instructions (or 'done' to finish): ");
-						String newInstructions = scanner.nextLine();
-						if (!newInstructions.equalsIgnoreCase("done")) {
-							recipeToEdit.setInstructions(newInstructions);
-							System.out.println("Instructions updated to: " + newInstructions);
+
+						List<String> newInstructionList = new ArrayList<>();
+						while (true) {
+							String newInstruction = scanner.nextLine();
+							if (newInstruction.equalsIgnoreCase("done")) {
+								break;
+							}
+							newInstructionList.add(newInstruction);
 						}
+
+						// Combine the instructions into a single string
+						String newInstructions = String.join("\n", newInstructionList);
+						recipeToEdit.setInstructions(newInstructions);
+						System.out.println("Instructions updated.");
 						break;
-					case 6:
+					case 7:
 						// Exit editing loop
+						continueEditing = false;
 						break;
 					default:
 						System.out.println("Invalid choice. Please select a valid aspect to edit.");
@@ -325,58 +363,59 @@ public final class StartProgram {
 		}
 	}
 
-	// Method to handle deleting a recipe
-	private static void deleteRecipe() throws DatabaseAccessException {
-		List<Recipe> deleteOptions = recipeHelper.showAllRecipes(); // Display all recipes
-
-		// If no recipes were found, return to the previous menu
-		if (deleteOptions.isEmpty()) {
-			System.out.println("No recipes found. Returning to the previous menu.");
-			return;
-		}
-
-		// Display the list of recipes to delete
-		System.out.println("Recipes available for deletion:");
-		for (int i = 0; i < deleteOptions.size(); i++) {
-			Recipe recipe = deleteOptions.get(i);
-			System.out.println((i + 1) + ": " + recipe.getName());
-		}
-
-		// Get the user's selection
-		int choice = -1;
-		// Loop until the user enters a valid choice
-		while (choice < 1 || choice > deleteOptions.size()) {
-			System.out.print("Enter the number of the recipe you want to delete: ");
-			// Get the user's input
-			try {
-				choice = Integer.parseInt(scanner.nextLine());
-				if (choice < 1 || choice > deleteOptions.size()) {
-					System.out.println("Invalid choice. Please enter a valid number.");
-				}
-			} catch (NumberFormatException e) {
-				System.out.println("Invalid input. Please enter a valid number.");
+	// Helper method to delete a recipe
+	private static void deleteRecipe() {
+		try {
+			// List recipes for deletion
+			System.out.println("Recipes available for deletion:");
+			List<Recipe> recipes = recipeHelper.showAllRecipes();
+			for (int i = 0; i < recipes.size(); i++) {
+				System.out.println((i + 1) + ": " + recipes.get(i).getName());
 			}
+			// Get the user's selection
+			System.out.print("Enter the number of the recipe you want to delete: ");
+			int recipeNumber = scanner.nextInt();
+			scanner.nextLine(); // Consume the newline character
+
+			// Check if the entered number is valid
+			if (recipeNumber < 1 || recipeNumber > recipes.size()) {
+				System.out.println("Invalid recipe number.");
+				return;
+			}
+
+			// Get the recipe to delete
+			Recipe recipeToDelete = recipes.get(recipeNumber - 1);
+
+			// Ask for confirmation before deleting
+			System.out.print("Are you sure you want to delete this recipe? (yes/no): ");
+			String confirmation = scanner.nextLine();
+
+			// Check if the user confirmed the deletion
+			if ("yes".equalsIgnoreCase(confirmation)) {
+				// If the user confirms, proceed to delete the category
+				System.out.println("Recipe deleted successfully!");
+			} else {
+				System.out.println("Recipe deletion cancelled.");
+
+				// Delete the ingredients associated with the recipe
+				for (Ingredient ingredient : recipeToDelete.getIngredients()) {
+					ingredientHelper.deleteIngredient(ingredient);
+				}
+
+				// Delete the recipe itself
+				recipeHelper.deleteRecipe(recipeToDelete);
+				System.out.println("Recipe deleted successfully!");
+			}
+		} catch (DatabaseAccessException e) {
+			System.out.println("Error deleting recipe: " + e.getMessage());
 		}
-
-		// Get the recipe to delete
-		Recipe toDelete = deleteOptions.get(choice - 1);
-
-		// Confirm the deletion
-		if (confirmDelete(toDelete)) {
-			recipeHelper.deleteRecipe(toDelete);
-			System.out.println("Recipe deleted successfully!");
-		} else {
-			System.out.println("Deletion canceled. Returning to the previous menu.");
-		}
-
-		// Return to the previous menu
-		handleSubMenu();
 	}
 
 	// Display the list of recipes
 	private static void viewRecipeList() throws DatabaseAccessException {
 		List<Recipe> allRecipes = recipeHelper.showAllRecipes();
 
+		// Loop through the list of recipes
 		for (int i = 0; i < allRecipes.size(); i++) {
 			Recipe recipe = allRecipes.get(i);
 
@@ -408,21 +447,6 @@ public final class StartProgram {
 
 		// Return to the previous menu
 		handleSubMenu();
-	}
-
-	// Helper method to confirm the deletion of a recipe
-	private static boolean confirmDelete(Recipe toDelete) {
-		System.out.println("Please confirm this is the recipe you would like to delete: ");
-		System.out.println("Recipe #" + toDelete.getId() + " : " + toDelete.getName());
-		System.out.println("1: Yes");
-		System.out.println("2: No");
-
-		// Get the user's confirmation
-		int confirmationInt = scanner.nextInt();
-
-		scanner.nextLine(); // Consume the newline character
-
-		return confirmationInt == 1; // Return true if the user confirms, false otherwise
 	}
 
 	// Helper method to get a positive integer input from the user
@@ -463,7 +487,7 @@ public final class StartProgram {
 			searchByServingSize(); // Search by serving size
 			break;
 		default:
-			System.out.println("Invalid choice. Please select a valid search method.");
+			System.out.println("Invalid choice. Please select a valid search method."); // Invalid selection
 			break;
 		}
 
@@ -473,18 +497,18 @@ public final class StartProgram {
 
 	// Helper method to select a search method
 	private static int selectSearchMethod() {
-		System.out.println("How would you like to search? "); // Display the search options
-		System.out.println("1 : Search by Name"); // Search by name
-		System.out.println("2 : Search by Category"); // Search by category
-		System.out.println("3 : Search by Ingredient"); // Search by ingredient
-		System.out.println("4 : Search by Serving Size"); // Search by serving size
+		System.out.println("  --- Search ---"); // Display the search options
+		System.out.println("   1 - Search by Name");
+		System.out.println("   2 - Search by Category");
+		System.out.println("   3 - Search by Ingredient");
+		System.out.println("   4 - Search by Serving Size");
 		System.out.print("*  Your selection: "); // Prompt the user for input
 		int searchBy = scanner.nextInt();
 		scanner.nextLine();
 		return searchBy;
 	}
 
-	// Helper methods to search for recipes
+	// Helper methods to search for recipes by name
 	private static void searchByName() throws DatabaseAccessException {
 		System.out.print("Enter the recipe's name: ");
 		String recipeName = scanner.nextLine();
@@ -498,21 +522,30 @@ public final class StartProgram {
 		}
 	}
 
-	// Helper methods to search for recipes
+	// Helper methods to search for recipes by category
 	private static void searchByCategory() throws DatabaseAccessException {
 		System.out.print("Enter the category: ");
-		String category = scanner.nextLine();
-		List<Recipe> foundRecipes = recipeHelper.searchForRecipeByCategory(category);
+		String categoryName = scanner.nextLine();
 
-		// If recipes were found, display them. Otherwise, display an error message
-		if (!foundRecipes.isEmpty()) {
-			displayFoundRecipes(foundRecipes);
+		// Use CategoryHelper to get the Category object by its name
+		Category categoryObj = categoryHelper.getCategoryByName(categoryName);
+
+		// If the category exists, search for recipes in that category
+		if (categoryObj != null) {
+			List<Recipe> foundRecipes = recipeHelper.searchForRecipeByCategory(categoryObj.getName());
+
+			// If recipes were found, display them. Otherwise, display an error message
+			if (!foundRecipes.isEmpty()) {
+				displayFoundRecipes(foundRecipes);
+			} else {
+				System.out.println("No recipes found in the specified category.");
+			}
 		} else {
-			System.out.println("No recipes found in the specified category.");
+			System.out.println("Category not found. Please enter a valid category.");
 		}
 	}
 
-	// Helper methods to search for recipes
+	// Helper methods to search for recipes by ingredient
 	private static void searchByIngredient() throws DatabaseAccessException {
 		System.out.print("Enter an ingredient: ");
 		String ingredient = scanner.nextLine();
@@ -526,7 +559,7 @@ public final class StartProgram {
 		}
 	}
 
-	// Helper methods to search for recipes
+	// Helper methods to search for recipes by serving size
 	private static void searchByServingSize() throws DatabaseAccessException {
 		System.out.print("Enter the serving size: ");
 		int servingSize = scanner.nextInt();
@@ -542,36 +575,39 @@ public final class StartProgram {
 	}
 
 	// Helper method to manage ingredients
-	private static void manageIngredients() throws DatabaseAccessException {
+	private static void manageIngredients(StartProgram program) throws DatabaseAccessException {
 		boolean continueManaging = true;
 
-		// Main menu loop
+		// Loop until the user chooses to return to the previous menu
 		while (continueManaging) {
-			System.out.println("--- Manage Ingredients ---");
-			System.out.println("1 -- List Ingredients");
-			System.out.println("2 -- Add Ingredient");
-			System.out.println("3 -- Delete Ingredient");
-			System.out.println("4 -- Return to Main Menu");
-			System.out.print("Your selection: ");
+			System.out.println("  --- Manage Ingredients ---");
+			System.out.println("   1 - Add Ingredient");
+			System.out.println("   2 - Edit Ingredient");
+			System.out.println("   3 - Delete Ingredient");
+			System.out.println("   4 - List Ingredients");
+			System.out.println("   5 - Return to Main Menu");
+			System.out.print("*  Your selection: ");
 
-			String input = scanner.nextLine();
+			String input = scanner.nextLine(); // Get the user's input
 
-			// Handle the user's selection
 			try {
 				int selection = Integer.parseInt(input);
 
 				switch (selection) {
 				case 1:
-					viewAllIngredients();
+					addIngredient(); // Add an ingredient
 					break;
 				case 2:
-					addIngredient();
+					program.editIngredient(); // Edit an ingredient
 					break;
 				case 3:
-					deleteIngredient();
+					program.deleteIngredient(); // Delete an ingredient
 					break;
 				case 4:
-					continueManaging = false;
+					viewAllIngredients(); // View all ingredients
+					break;
+				case 5:
+					continueManaging = false; // Return to the previous menu
 					break;
 				default:
 					System.out.println("Invalid selection. Please try again.");
@@ -589,8 +625,14 @@ public final class StartProgram {
 			System.out.print("Enter the name of the ingredient: ");
 			String ingredientName = scanner.nextLine();
 
+			// Check if the ingredient name is empty
+			if (ingredientName.trim().isEmpty()) {
+				System.out.println("Ingredient name cannot be empty.");
+				return;
+			}
+
 			// Check if the ingredient already exists in the database
-			Ingredient existingIngredient = ingredientHelper.getIngredientByName(ingredientName);
+			Ingredient existingIngredient = ingredientHelper.findIngredientByName(ingredientName);
 
 			// If the ingredient already exists, display an error message and return
 			if (existingIngredient != null) {
@@ -602,13 +644,6 @@ public final class StartProgram {
 			Ingredient newIngredient = new Ingredient();
 			newIngredient.setName(ingredientName);
 
-			// Collect additional information about the ingredient
-			System.out.print("Enter the quantity: ");
-			scanner.nextLine();
-
-			System.out.print("Enter the unit (e.g., cups, grams, etc.): ");
-			scanner.nextLine();
-
 			// Call the method to insert the new ingredient into the database
 			ingredientHelper.insertIngredient(newIngredient);
 			System.out.println("Ingredient added successfully!");
@@ -618,26 +653,93 @@ public final class StartProgram {
 		}
 	}
 
-	// Helper methods to delete ingredients
-	private static void deleteIngredient() {
-		try {
-			System.out.print("Enter the name of the ingredient to delete: ");
-			String ingredientName = scanner.nextLine();
+	// Helper method to check if an ingredient is used in any recipes
+	private boolean isIngredientUsedInRecipes(String ingredientName) throws DatabaseAccessException {
+		List<Recipe> recipes = recipeHelper.showAllRecipes();
+		for (Recipe recipe : recipes) {
+			List<Ingredient> ingredients = recipe.getIngredients();
+			for (Ingredient ingredient : ingredients) {
+				if (ingredient.getName().equals(ingredientName)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
-			// Check if the ingredient exists in the database
-			Ingredient existingIngredient = ingredientHelper.getIngredientByName(ingredientName);
+	// Helper method to edit an ingredient
+	private void editIngredient() throws DatabaseAccessException {
+		List<Ingredient> allIngredients = ingredientHelper.showAllIngredients();
+		Collections.sort(allIngredients, Comparator.comparing(Ingredient::getName));
 
-			// If the ingredient doesn't exist, display an error message and return
-			if (existingIngredient == null) {
-				System.out.println("Ingredient not found in the database.");
+		// Display a list of ingredients for the user to choose from
+		System.out.println("Select an ingredient to edit:");
+		int index = 1;
+		for (Ingredient ingredient : allIngredients) {
+			System.out.println(index + ": " + ingredient.getName());
+			index++;
+		}
+
+		// Get the user's selection
+		String input = scanner.nextLine();
+		int selection = Integer.parseInt(input) - 1; // Convert to zero-based index
+		Ingredient existingIngredient = allIngredients.get(selection);
+
+		// Display the current name and prompt the user for a new name
+		System.out.println("Current Name: " + existingIngredient.getName());
+		System.out.print("Enter the new name: ");
+		String newName = scanner.nextLine();
+
+		// Check if the new name is empty
+		Ingredient anotherIngredient = ingredientHelper.findIngredientByName(newName);
+		if (anotherIngredient != null && anotherIngredient.getId() != existingIngredient.getId()) {
+			System.out.println("An ingredient with this name already exists.");
+			return;
+		}
+
+		// Update the ingredient's name
+		existingIngredient.setName(newName);
+		System.out.println("Name updated to: " + newName);
+
+		// Update the ingredient in the database
+		ingredientHelper.updateIngredient(existingIngredient);
+		System.out.println("Ingredient updated successfully!");
+	}
+
+	// Helper method to delete an ingredient by name
+	private void deleteIngredient() throws DatabaseAccessException {
+		List<Ingredient> allIngredients = ingredientHelper.showAllIngredients();
+		Collections.sort(allIngredients, Comparator.comparing(Ingredient::getName));
+
+		// Display a list of ingredients for the user to choose from
+		System.out.println("Select an ingredient to delete:");
+		int index = 1;
+		for (Ingredient ingredient : allIngredients) {
+			System.out.println(index + ": " + ingredient.getName());
+			index++;
+		}
+
+		// Get the user's selection
+		String input = scanner.nextLine();
+		int selection = Integer.parseInt(input) - 1; // Convert to zero-based index
+		Ingredient ingredientToDelete = allIngredients.get(selection);
+
+		// Ask for confirmation before deleting
+		System.out.print("Are you sure you want to delete this ingredient? (yes/no): ");
+		String confirmation = scanner.nextLine();
+
+		// Check if the user confirmed the deletion
+		if ("yes".equalsIgnoreCase(confirmation)) {
+			if (isIngredientUsedInRecipes(ingredientToDelete.getName())) {
+				System.out.println("Ingredient is used in one or more recipes and cannot be deleted.");
 				return;
 			}
 
-			// If the ingredient exists, proceed to delete it
-			ingredientHelper.deleteIngredient(existingIngredient);
+			// If the user confirms, proceed to delete the ingredient
+			ingredientHelper.deleteIngredient(ingredientToDelete);
 			System.out.println("Ingredient deleted successfully!");
-		} catch (DatabaseAccessException e) {
-			System.out.println("Error deleting ingredient: " + e.getMessage());
+		} else {
+			System.out.println("Ingredient deletion cancelled.");
 		}
 	}
 
@@ -666,31 +768,36 @@ public final class StartProgram {
 
 		// Main menu loop
 		while (continueManaging) {
-			System.out.println("--- Manage Categories ---");
-			System.out.println("1 -- List Categories");
-			System.out.println("2 -- Add Category");
-			System.out.println("3 -- Delete Category");
-			System.out.println("4 -- Return to Main Menu");
-			System.out.print("Your selection: ");
+			System.out.println("  --- Manage Categories ---");
+			System.out.println("   1 - Add Category");
+			System.out.println("   2 - Edit Category");
+			System.out.println("   3 - Delete Category");
+			System.out.println("   4 - List Categories");
+			System.out.println("   5 - Return to Main Menu");
+			System.out.print("*  Your selection: ");
 
+			// Get the user's input
 			String input = scanner.nextLine();
 
 			// Handle the user's selection
 			try {
-				int selection = Integer.parseInt(input);
+				int selection = Integer.parseInt(input); // Convert the input to an integer
 
 				switch (selection) {
 				case 1:
-					viewAllCategories();
+					addCategory(); // Add a category
 					break;
 				case 2:
-					addCategory();
+					editCategory(); // Edit a category
 					break;
 				case 3:
-					deleteCategory();
+					deleteCategory(); // Delete a category
 					break;
 				case 4:
-					continueManaging = false;
+					viewAllCategories(); // View all categories
+					break;
+				case 5:
+					continueManaging = false; // Return to the previous menu
 					break;
 				default:
 					System.out.println("Invalid selection. Please try again.");
@@ -711,6 +818,7 @@ public final class StartProgram {
 			// Check if the category already exists in the database
 			Category existingCategory = categoryHelper.getCategoryByName(categoryName);
 
+			// If the category already exists, display an error message and return
 			if (existingCategory != null) {
 				System.out.println("Category already exists in the database.");
 				return;
@@ -728,26 +836,73 @@ public final class StartProgram {
 		}
 	}
 
-	// Helper methods to delete categories
-	private static void deleteCategory() {
-		try {
-			System.out.print("Enter the name of the category to delete: ");
-			String categoryName = scanner.nextLine();
+	// Helper method to edit a category
+	private static void editCategory() throws DatabaseAccessException {
+		List<Category> allCategories = categoryHelper.getAllCategories();
+		Collections.sort(allCategories, Comparator.comparing(Category::getName));
 
-			// Check if the category exists in the database
-			Category existingCategory = categoryHelper.getCategoryByName(categoryName);
+		// Display a list of categories for the user to choose from
+		System.out.println("Select a category to edit:");
+		int index = 1;
+		for (Category category : allCategories) {
+			System.out.println(index + ": " + category.getName());
+			index++;
+		}
 
-			// If the category doesn't exist, display an error message and return
-			if (existingCategory == null) {
-				System.out.println("Category not found in the database.");
-				return;
-			}
+		// Get the user's selection
+		String input = scanner.nextLine();
+		int selection = Integer.parseInt(input) - 1; // Convert to zero-based index
+		Category existingCategory = allCategories.get(selection);
 
-			// If the category exists, proceed to delete it
-			categoryHelper.deleteCategory(existingCategory);
+		// Display the current name and prompt the user for a new name
+		System.out.println("Current Name: " + existingCategory.getName());
+		System.out.print("Enter the new name: ");
+		String newName = scanner.nextLine();
+
+		// Check if the new name is empty
+		Category anotherCategory = categoryHelper.getCategoryByName(newName);
+		if (anotherCategory != null && anotherCategory.getId() != existingCategory.getId()) {
+			System.out.println("A category with this name already exists.");
+			return;
+		}
+
+		// Update the category's name
+		existingCategory.setName(newName);
+		System.out.println("Name updated to: " + newName);
+
+		// Update the category in the database
+		categoryHelper.updateCategory(existingCategory);
+		System.out.println("Category updated successfully!");
+	}
+
+	// Helper method to delete a category by name
+	private static void deleteCategory() throws DatabaseAccessException {
+		List<Category> allCategories = categoryHelper.getAllCategories();
+		Collections.sort(allCategories, Comparator.comparing(Category::getName));
+
+		// Display a list of categories for the user to choose from
+		System.out.println("Select a category to delete:");
+		int index = 1;
+		for (Category category : allCategories) {
+			System.out.println(index + ": " + category.getName());
+			index++;
+		}
+
+		// Get the user's selection
+		String input = scanner.nextLine();
+		int selection = Integer.parseInt(input) - 1; // Convert to zero-based index
+		Category categoryToDelete = allCategories.get(selection);
+
+		// Ask for confirmation before deleting
+		System.out.print("Are you sure you want to delete this category? (yes/no): ");
+		String confirmation = scanner.nextLine();
+
+		// Check if the user confirmed the deletion
+		if ("yes".equalsIgnoreCase(confirmation)) {
+			categoryHelper.deleteCategory(categoryToDelete);
 			System.out.println("Category deleted successfully!");
-		} catch (DatabaseAccessException e) {
-			System.out.println("Error deleting category: " + e.getMessage());
+		} else {
+			System.out.println("Category deletion cancelled.");
 		}
 	}
 
@@ -773,8 +928,8 @@ public final class StartProgram {
 	// Sub-menu for returning to the main menu or exiting the program
 	private static void handleSubMenu() {
 		while (true) {
-			System.out.println("*  1 -- Return to Main Menu");
-			System.out.println("*  2 -- Exit the program");
+			System.out.println("*  1 - Return to Main Menu");
+			System.out.println("*  2 - Exit the program");
 			System.out.print("*  Your selection: ");
 			int subSelection = scanner.nextInt();
 			scanner.nextLine(); // Consume the newline character
