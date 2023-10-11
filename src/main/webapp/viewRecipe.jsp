@@ -11,13 +11,32 @@
 
 <h1>${currentRecipe.name}</h1>
 
+<p>Category: ${currentRecipe.category.name} <br />
+Preparation Time: ${currentRecipe.preparationTime} minutes<br />
+Servings: ${currentRecipe.servings}</p>
+
 <h2>Ingredients</h2>
 
-<c:forEach items="${requestScope.Recipe.allIngredients}" var="currentIngredient">
+<c:forEach items="${currentRecipe.allIngredients}" var="currentIngredient">
 	<ol>
 		<li>${currentIngredient}</li>
 	</ol>
 </c:forEach>
+
+<h2>Instructions</h2>
+
+<p>${currentRecipe.instructions}</p>
+
+<a href="index.html">Return to main menu</a>
+
+<footer>
+	<div>
+		Date Added: ${currentRecipe.dateAdded}
+	</div>
+	<div>
+		Last Modified: ${currentRecipe.lastModified}
+	</div>
+</footer>
 
 </body>
 </html>
