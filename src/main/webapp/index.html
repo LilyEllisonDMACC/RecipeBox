@@ -2,15 +2,19 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Please LogIn</title>
+<title>Recipe Box</title>
 </head>
 <body>
-	<h1>Please Log In to MySQL</h1>
+	<h1>Welcome to Our Recipe Box!</h1>
 	
-	<form action = "loginServlet" method = "post">
-		Password: <input type = "password" name = "password"> <br />
-		<input type = "submit" value = "Log In">
-	</form>
+	<ul>What would you like to do?
+		<li><a href = "addEditRecipe.jsp">Manage Recipes - (Add, Edit, or Delete)</a></li>
+		<li><a href = "listRecipe.jsp">View Recipe List</a></li>
+		<li><a href = "addEditIngredient.jsp">Manage Ingredients</a></li>
+		<li><a href = "listIngredients.jsp">View Ingredients List</a></li>
+		<li><a href = "addEditCategory.jsp">Manage Categories</a></li>
+		<li><a href = "listCategories.jsp">View Categories List</a></li>
+	</ul>
 
 </body>
 </html>
