@@ -102,6 +102,16 @@ public class RecipeHelper {
 		}
 	}
 
+	// Retrieves a recipe by its ID
+	public Recipe getRecipeById(int id) throws DatabaseAccessException {
+		try {
+			Recipe found = em.find(Recipe.class, id);
+			return found;
+		} catch (Exception e) {
+			throw new DatabaseAccessException("Error getting recipe by ID: " + e.getMessage());
+		}
+	}
+
 	// Searches for recipes by their name
 	public List<Recipe> searchForRecipeByTitle(String recipeName) throws DatabaseAccessException {
 		try {
