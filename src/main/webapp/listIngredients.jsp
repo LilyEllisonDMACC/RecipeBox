@@ -18,7 +18,10 @@
 	</c:forEach>
 	<input type="submit" value="Edit" name="doThisToIngredient">
 	<input type="submit" value="Delete" name="doThisToIngredient">
+	<input type="submit" value="View" name="doThisToIngredient">
 </form>
+
+	<a href="index.html">Return to main menu</a>
 
 </body>
 </html>

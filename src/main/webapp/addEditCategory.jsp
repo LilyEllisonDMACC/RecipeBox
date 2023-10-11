@@ -4,9 +4,12 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Add/Edit Category</title>
 </head>
 <body>
+	<form action="categoryServlet" method="post">
+	
+	</form>
 
 </body>
 </html>
