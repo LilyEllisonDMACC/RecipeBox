@@ -1,42 +1,24 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
 <title>View Recipe</title>
 </head>
 <body>
-
-<h1>${currentRecipe.name}</h1>
-
-<p>Category: ${currentRecipe.category.name} <br />
-Preparation Time: ${currentRecipe.preparationTime} minutes<br />
-Servings: ${currentRecipe.servings}</p>
-
-<h2>Ingredients</h2>
-
-<c:forEach items="${currentRecipe.allIngredients}" var="currentIngredient">
-	<ol>
-		<li>${currentIngredient}</li>
-	</ol>
-</c:forEach>
-
-<h2>Instructions</h2>
-
-<p>${currentRecipe.instructions}</p>
-
-<a href="index.html">Return to main menu</a>
-
-<footer>
-	<div>
-		Date Added: ${currentRecipe.dateAdded}
-	</div>
-	<div>
-		Last Modified: ${currentRecipe.lastModified}
-	</div>
-</footer>
-
+	<h1>${recipe.name}</h1>
+	<p>Servings: ${recipe.servings}</p>
+	<p>Preparation Time: ${recipe.preparationTime} minutes</p>
+	<p>Category: ${recipe.category.name}</p>
+	<p>Ingredients:</p>
+	<ul>
+		<c:forEach var="ingredient" items="${recipe.ingredients}">
+			<li>${ingredient.name}</li>
+		</c:forEach>
+	</ul>
+	<p>Instructions:</p>
+	<pre>${recipe.instructions}</pre>
+	
+<a href="index.jsp">Return to Homepage</a>
+<a href="listRecipes.jsp">View Recipe List</a>
 </body>
 </html>

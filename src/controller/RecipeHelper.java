@@ -2,7 +2,6 @@
  * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
  * Oct 6, 2023
- *
  * @author Adam Reese - amreese3
  * CIS175 - Fall 2023
  * Oct 6, 2023
@@ -10,16 +9,16 @@
 
 package controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.TypedQuery;
-
 import exceptions.DatabaseAccessException;
 import model.Category;
 import model.Ingredient;
 import model.Recipe;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
+import java.util.ArrayList;
+import java.util.List;
 
 // This class is used to perform CRUD operations on the Recipe table
 public class RecipeHelper {
@@ -99,6 +98,16 @@ public class RecipeHelper {
 			return typedQuery.getResultList();
 		} catch (Exception e) {
 			throw new DatabaseAccessException("Error retrieving recipes: " + e.getMessage());
+		}
+	}
+
+	// Retrieves a recipe by its ID
+	public Recipe getRecipeById(int id) throws DatabaseAccessException {
+		try {
+			Recipe found = em.find(Recipe.class, id);
+			return found;
+		} catch (Exception e) {
+			throw new DatabaseAccessException("Error getting recipe by ID: " + e.getMessage());
 		}
 	}
 

@@ -2,7 +2,6 @@
  * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
  * Oct 7, 2023
- * 
  * @author Adam Reese - amreese3
  * CIS175 - Fall 2023
  * Oct 7, 2023
@@ -10,12 +9,11 @@
 
 package model;
 
-import java.text.SimpleDateFormat;
-import java.util.List;
+import util.DateConverter;
 
 import javax.persistence.*;
-
-import util.DateConverter;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 @Entity
 public class Recipe {
@@ -30,7 +28,7 @@ public class Recipe {
 	private int preparationTime;
 
 	// Many-to-one relationship with Category
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch=FetchType.EAGER)
 	private Category category;
 
 	// One-to-many relationship with Ingredient

@@ -1,9 +1,7 @@
-
 /**
  * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
  * Oct 6, 2023
- *
  * @author Adam Reese - amreese3
  * CIS175 - Fall 2023
  * Oct 6, 2023
@@ -11,14 +9,14 @@
 
 package controller;
 
+import exceptions.DatabaseAccessException;
+import model.Ingredient;
+import model.Recipe;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import java.util.List;
-
-import exceptions.DatabaseAccessException;
-import model.Ingredient;
-import model.Recipe;
 
 // Class that handles database access for Ingredient objects
 public class IngredientHelper {
@@ -98,6 +96,14 @@ public class IngredientHelper {
 				Recipe.class);
 		query.setParameter("ingredient", ingredient);
 		return !query.getResultList().isEmpty();
+	}
+
+	// Gets a list of recipes that use a given ingredient
+	public List<Recipe> getRecipesUsingIngredient(Ingredient ingredient) throws DatabaseAccessException {
+		TypedQuery<Recipe> query = em.createQuery("SELECT r FROM Recipe r WHERE :ingredient MEMBER OF r.ingredients",
+				Recipe.class);
+		query.setParameter("ingredient", ingredient);
+		return query.getResultList();
 	}
 
 	// Retrieves all ingredients from the database
