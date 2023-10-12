@@ -1,3 +1,4 @@
+<jsp:useBean id="category" scope="request" type="java.util.List"/>
 <!DOCTYPE html>
 <html>
 <head>

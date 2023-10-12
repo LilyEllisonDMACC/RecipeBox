@@ -1,3 +1,4 @@
+<jsp:useBean id="recipe" scope="request" type="model.Recipe"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>

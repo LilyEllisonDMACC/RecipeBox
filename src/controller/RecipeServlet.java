@@ -21,9 +21,12 @@ import java.util.List;
 public class RecipeServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+	private EntityManager em;
 
-	public RecipeServlet() {
-		super();
+	@Override
+	public void init() {
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("RecipeBox");
+		em = emf.createEntityManager();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -31,51 +34,33 @@ public class RecipeServlet extends HttpServlet {
 		String action = request.getParameter("action");
 		String id = request.getParameter("id");
 
-		EntityManagerFactory emf = null;
-		EntityManager em = null;
-		RecipeHelper rh = null;
-
 		try {
-			emf = Persistence.createEntityManagerFactory("RecipeBox");
-			em = emf.createEntityManager();
-			rh = new RecipeHelper(em);
-
 			if ("view".equals(action)) {
-				Recipe recipe = rh.getRecipeById(Integer.parseInt(id));
+				Recipe recipe = getRecipeById(Integer.parseInt(id));
 				request.setAttribute("recipe", recipe);
 				getServletContext().getRequestDispatcher("/viewRecipe.jsp").forward(request, response);
 			} else if ("edit".equals(action)) {
-				Recipe recipe = rh.getRecipeById(Integer.parseInt(id));
+				Recipe recipe = getRecipeById(Integer.parseInt(id));
 				request.setAttribute("recipe", recipe);
 				getServletContext().getRequestDispatcher("/addRecipe.jsp").forward(request, response);
 			} else if ("delete".equals(action)) {
-				Recipe recipeToDelete = rh.getRecipeById(Integer.parseInt(id)); // Retrieve Recipe by ID
-				rh.deleteRecipe(recipeToDelete); // Delete using Recipe object
+				Recipe recipeToDelete = getRecipeById(Integer.parseInt(id));
+				deleteRecipe(recipeToDelete);
 				getServletContext().getRequestDispatcher("/manageRecipes.jsp").forward(request, response);
 			}
 		} catch (DatabaseAccessException e) {
 			e.printStackTrace();
 			getServletContext().getRequestDispatcher("/errorPage.jsp").forward(request, response);
-		} finally {
-			// Close EntityManager
-			if (em != null && em.isOpen()) {
-				em.close();
-			}
-			if (emf != null && emf.isOpen()) {
-				emf.close();
-			}
 		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// Initialize EntityManager and RecipeHelper
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("RecipeBox");
-		EntityManager em = emf.createEntityManager();
+		// Initialize helpers
 		RecipeHelper rh = new RecipeHelper(em);
 		IngredientHelper ih = new IngredientHelper(em);
 
-		// Get form parameters
+		// Get parameters from the form
 		String recipeId = request.getParameter("recipeId");
 		String recipeName = request.getParameter("name");
 		int servings = Integer.parseInt(request.getParameter("servings"));
@@ -84,38 +69,69 @@ public class RecipeServlet extends HttpServlet {
 		String[] ingredientItems = request.getParameterValues("ingredients");
 		String[] instructions = request.getParameterValues("instructions");
 
-		// Convert ingredientItems to List<Ingredient>
+		// Create a list to hold ingredients
 		List<Ingredient> ingredients = new ArrayList<>();
-		for (String item : ingredientItems) {
-			String[] parts = item.split("\\|");
-			String name = parts[0];
-			try {
-				Ingredient ingredient = ih.findIngredientByName(name);
-				if (ingredient == null) {
-					ingredient = new Ingredient(name);
-					ih.insertIngredient(ingredient);
+		if (ingredientItems != null) {
+			for (String item : ingredientItems) {
+				if (item != null && !item.isEmpty()) {
+					String[] parts = item.split("\\|");
+					if (parts.length > 0) {
+						String name = parts[0];
+						Ingredient ingredient = null;
+						try {
+							ingredient = ih.findIngredientByName(name);
+						} catch (DatabaseAccessException e) {
+							e.printStackTrace();
+							getServletContext().getRequestDispatcher("/errorPage.jsp").forward(request, response);
+						}
+						if (ingredient == null) {
+							ingredient = new Ingredient(name);
+							try {
+								ih.insertIngredient(ingredient);
+							} catch (DatabaseAccessException e) {
+								e.printStackTrace();
+								getServletContext().getRequestDispatcher("/errorPage.jsp").forward(request, response);
+							}
+						}
+						ingredients.add(ingredient);
+					}
 				}
-				ingredients.add(ingredient);
+			}
+		}
+
+		// Combine instructions into a single string
+		String instructionText = "";
+		if (instructions != null && instructions.length > 0) {
+			instructionText = String.join("\n", instructions);
+		}
+
+		// Get or create the category
+		CategoryHelper ch = new CategoryHelper(em);
+		Category cat = null;
+		try {
+			cat = ch.getCategoryByName(category);
+		} catch (DatabaseAccessException e) {
+			e.printStackTrace();
+			getServletContext().getRequestDispatcher("/errorPage.jsp").forward(request, response);
+		}
+		if (cat == null) {
+			cat = new Category(category);
+			try {
+				ch.addCategory(cat);
 			} catch (DatabaseAccessException e) {
 				e.printStackTrace();
 				getServletContext().getRequestDispatcher("/errorPage.jsp").forward(request, response);
 			}
 		}
 
-		// Convert instructions to single String
-		String instructionText = String.join("\n", instructions);
-
-		// Create new Recipe object
-		Category cat = new Category(category);
+		// Create or update the recipe
 		Recipe recipe = new Recipe(recipeName, servings, prepTime, cat, instructionText);
 		recipe.setIngredients(ingredients);
 
 		try {
 			if (recipeId == null || recipeId.isEmpty()) {
-				// Insert new Recipe into database
 				rh.insertRecipe(recipe, ingredients);
 			} else {
-				// Update existing Recipe
 				recipe.setId(Integer.parseInt(recipeId));
 				rh.updateRecipe(recipe);
 			}
@@ -124,11 +140,28 @@ public class RecipeServlet extends HttpServlet {
 			getServletContext().getRequestDispatcher("/errorPage.jsp").forward(request, response);
 		}
 
-		// Close EntityManager
-		em.close();
-		emf.close();
+		getServletContext().getRequestDispatcher("/manageRecipes.jsp").forward(request, response);
+	}
 
-		// Redirect to another page (e.g., viewAllRecipes.jsp)
-		getServletContext().getRequestDispatcher("/viewAllRecipes.jsp").forward(request, response);
+	private Recipe getRecipeById(int id) throws DatabaseAccessException {
+		try {
+            return em.find(Recipe.class, id);
+		} catch (Exception e) {
+			throw new DatabaseAccessException("Error getting recipe by ID: " + e.getMessage());
+		}
+	}
+
+	private void deleteRecipe(Recipe toDelete) throws DatabaseAccessException {
+		try {
+			em.getTransaction().begin();
+			Recipe result = em.find(Recipe.class, toDelete.getId());
+			em.remove(result);
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			throw new DatabaseAccessException("Error deleting recipe: " + e.getMessage());
+		}
 	}
 }

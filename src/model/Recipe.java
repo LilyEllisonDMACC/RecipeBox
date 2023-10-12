@@ -28,7 +28,7 @@ public class Recipe {
 	private int preparationTime;
 
 	// Many-to-one relationship with Category
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	private Category category;
 
 	// One-to-many relationship with Ingredient
@@ -36,7 +36,7 @@ public class Recipe {
 	private String instructions;
 
 	// One-to-many relationship with Ingredient
-	@OneToMany(cascade = CascadeType.PERSIST)
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<Ingredient> ingredients;
 
 	@Convert(converter = DateConverter.class)
@@ -132,6 +132,22 @@ public class Recipe {
 
 	public void setInstructions(String instructions) {
 		this.instructions = instructions;
+	}
+
+	public java.util.Date getDateAdded() {
+		return dateAdded;
+	}
+
+	public void setDateAdded(java.util.Date dateAdded) {
+		this.dateAdded = dateAdded;
+	}
+
+	public java.util.Date getLastModified() {
+		return lastModified;
+	}
+
+	public void setLastModified(java.util.Date lastModified) {
+		this.lastModified = lastModified;
 	}
 
 	@PrePersist

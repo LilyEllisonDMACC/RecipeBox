@@ -12,7 +12,7 @@
 		<li><a href="manageCategories.jsp">Manage Categories</a></li>
 	</ul>
 	<h2>Search Recipes</h2>
-	<form action="SearchServlet" method="post">
+	<form action="searchServlet" method="post">
 		<input type="text" name="query" placeholder="Search..."> <input
 			type="submit" value="Search">
 	</form>

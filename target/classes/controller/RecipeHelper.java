@@ -23,23 +23,28 @@ import java.util.List;
 // This class is used to perform CRUD operations on the Recipe table
 public class RecipeHelper {
 
-	// EntityManager is used to interact with the database
 	private final EntityManager em;
 
-	// Constructor that takes an EntityManager as a parameter
 	public RecipeHelper(EntityManager em) {
 		this.em = em;
 	}
 
-	// Inserts a new recipe into the database
+	private void beginTransaction() {
+		if (!em.getTransaction().isActive()) {
+			em.getTransaction().begin();
+		}
+	}
+
+	private void commitTransaction() {
+		if (em.getTransaction().isActive()) {
+			em.getTransaction().commit();
+		}
+	}
+
 	public void insertRecipe(Recipe recipe, List<Ingredient> ingredients) throws DatabaseAccessException {
 		try {
-			if (em.getTransaction().isActive()) {
-				em.getTransaction().commit();
-			}
-
 			// Begin a new transaction
-			em.getTransaction().begin();
+			beginTransaction();
 
 			// Set the ingredients for the recipe
 			recipe.setIngredients(ingredients);
@@ -48,7 +53,7 @@ public class RecipeHelper {
 			em.persist(recipe);
 
 			// Commit the transaction
-			em.getTransaction().commit();
+			commitTransaction();
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (em.getTransaction().isActive()) {
@@ -114,9 +119,9 @@ public class RecipeHelper {
 	// Searches for recipes by their name
 	public List<Recipe> searchForRecipeByTitle(String recipeName) throws DatabaseAccessException {
 		try {
-			TypedQuery<Recipe> typedQuery = em.createQuery("SELECT rb FROM Recipe rb WHERE rb.name = :selectedName",
-					Recipe.class);
-			typedQuery.setParameter("selectedName", recipeName);
+			TypedQuery<Recipe> typedQuery = em
+					.createQuery("SELECT rb FROM Recipe rb WHERE LOWER(rb.name) = :selectedName", Recipe.class);
+			typedQuery.setParameter("selectedName", recipeName.toLowerCase());
 
 			return typedQuery.getResultList();
 		} catch (Exception e) {

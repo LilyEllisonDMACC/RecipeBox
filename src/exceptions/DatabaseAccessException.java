@@ -9,6 +9,7 @@
 
 package exceptions;
 
+
 // This exception is thrown when there is an error accessing the database
 public class DatabaseAccessException extends Exception {
 	private static final long serialVersionUID = 1L;
