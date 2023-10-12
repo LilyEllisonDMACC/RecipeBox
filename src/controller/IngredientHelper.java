@@ -1,9 +1,7 @@
-
 /**
  * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
  * Oct 6, 2023
- *
  * @author Adam Reese - amreese3
  * CIS175 - Fall 2023
  * Oct 6, 2023
@@ -11,14 +9,14 @@
 
 package controller;
 
+import exceptions.DatabaseAccessException;
+import model.Ingredient;
+import model.Recipe;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import java.util.List;
-
-import exceptions.DatabaseAccessException;
-import model.Ingredient;
-import model.Recipe;
 
 // Class that handles database access for Ingredient objects
 public class IngredientHelper {

@@ -1,12 +1,13 @@
 package controller;
 
-import model.Category;
-import javax.servlet.*;
-import javax.servlet.http.*;
-
 import exceptions.DatabaseAccessException;
+import model.Category;
 
-import javax.servlet.annotation.*;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -29,27 +30,24 @@ public class CategoryServlet extends HttpServlet {
 			try {
 				categoryHelper.addCategory(newCategory);
 			} catch (DatabaseAccessException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} else if (action.equals("edit")) {
 			int id = Integer.parseInt(request.getParameter("id"));
-			Category categoryToUpdate = new Category(); // Replace with actual method to get Category by ID
+			Category categoryToUpdate = new Category();
 			categoryToUpdate.setId(id);
 			try {
 				categoryHelper.updateCategory(categoryToUpdate);
 			} catch (DatabaseAccessException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} else if (action.equals("delete")) {
 			int id = Integer.parseInt(request.getParameter("id"));
-			Category categoryToDelete = new Category(); // Replace with actual method to get Category by ID
+			Category categoryToDelete = new Category();
 			categoryToDelete.setId(id);
 			try {
 				categoryHelper.deleteCategory(categoryToDelete);
 			} catch (DatabaseAccessException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -66,7 +64,7 @@ public class CategoryServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		request.setAttribute("allCategories", categories);
+		request.setAttribute("categories", categories);
 		getServletContext().getRequestDispatcher("/listCategories.jsp").forward(request, response);
 	}
 }

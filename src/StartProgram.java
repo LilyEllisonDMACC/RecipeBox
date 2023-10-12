@@ -3,7 +3,6 @@
  * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
  * Oct 6, 2023
- *
  * @author Adam Reese - amreese3
  * CIS175 - Fall 2023
  * Oct 6, 2023
@@ -20,13 +19,7 @@ import model.Recipe;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 // Main class
 public final class StartProgram {
@@ -76,74 +69,6 @@ public final class StartProgram {
 				emf.close();
 			}
 			scanner.close();
-		}
-	}
-
-	// Helper method to handle the main menu
-	public void runMenu(Scanner scanner) {
-		boolean continueRunning = true;
-		System.out.println("--- Welcome to our awesome recipe box! ---");
-
-		// Main menu loop
-		while (continueRunning) {
-			System.out.println("*  Select an option:");
-			System.out.println("   1 - Add a new recipe");
-			System.out.println("   2 - Edit a recipe");
-			System.out.println("   3 - Delete a recipe");
-			System.out.println("   4 - Search for recipes");
-			System.out.println("   5 - View recipe list");
-			System.out.println("   6 - Manage ingredients");
-			System.out.println("   7 - Manage categories");
-			System.out.println("   8 - Quit");
-
-			// Get the user's input
-			System.out.print("*  Your selection: ");
-			String input = scanner.nextLine();
-
-			// Handle the user's input
-			try {
-				int selection = Integer.parseInt(input);
-
-				// Handle the user's selection
-				switch (selection) {
-				case 1:
-					addRecipe(entityManager);
-					break;
-				case 2:
-					editRecipe();
-					break;
-				case 3:
-					deleteRecipe();
-					break;
-				case 4:
-					searchRecipes();
-					break;
-				case 5:
-					viewRecipeList();
-					break;
-				case 6:
-					manageIngredients(this);
-					break;
-				case 7:
-					// Initialize categoryHelper with the EntityManager
-					categoryHelper = new CategoryHelper(entityManager);
-					manageCategories();
-					break;
-				case 8:
-					recipeHelper.closeEntityManager();
-					System.out.println("   Goodbye!   ");
-					continueRunning = false;
-					break;
-				default:
-					System.out.println("Invalid selection. Please try again.");
-					break;
-				}
-				// Handle any exceptions that may occur
-			} catch (NumberFormatException e) {
-				System.out.println("Invalid input. Please enter a valid selection.");
-			} catch (DatabaseAccessException e) {
-				System.out.println("Error: " + e.getMessage());
-			}
 		}
 	}
 
@@ -653,96 +578,6 @@ public final class StartProgram {
 		}
 	}
 
-	// Helper method to check if an ingredient is used in any recipes
-	private boolean isIngredientUsedInRecipes(String ingredientName) throws DatabaseAccessException {
-		List<Recipe> recipes = recipeHelper.showAllRecipes();
-		for (Recipe recipe : recipes) {
-			List<Ingredient> ingredients = recipe.getIngredients();
-			for (Ingredient ingredient : ingredients) {
-				if (ingredient.getName().equals(ingredientName)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	// Helper method to edit an ingredient
-	private void editIngredient() throws DatabaseAccessException {
-		List<Ingredient> allIngredients = ingredientHelper.showAllIngredients();
-		Collections.sort(allIngredients, Comparator.comparing(Ingredient::getName));
-
-		// Display a list of ingredients for the user to choose from
-		System.out.println("Select an ingredient to edit:");
-		int index = 1;
-		for (Ingredient ingredient : allIngredients) {
-			System.out.println(index + ": " + ingredient.getName());
-			index++;
-		}
-
-		// Get the user's selection
-		String input = scanner.nextLine();
-		int selection = Integer.parseInt(input) - 1; // Convert to zero-based index
-		Ingredient existingIngredient = allIngredients.get(selection);
-
-		// Display the current name and prompt the user for a new name
-		System.out.println("Current Name: " + existingIngredient.getName());
-		System.out.print("Enter the new name: ");
-		String newName = scanner.nextLine();
-
-		// Check if the new name is empty
-		Ingredient anotherIngredient = ingredientHelper.findIngredientByName(newName);
-		if (anotherIngredient != null && anotherIngredient.getId() != existingIngredient.getId()) {
-			System.out.println("An ingredient with this name already exists.");
-			return;
-		}
-
-		// Update the ingredient's name
-		existingIngredient.setName(newName);
-		System.out.println("Name updated to: " + newName);
-
-		// Update the ingredient in the database
-		ingredientHelper.updateIngredient(existingIngredient);
-		System.out.println("Ingredient updated successfully!");
-	}
-
-	// Helper method to delete an ingredient by name
-	private void deleteIngredient() throws DatabaseAccessException {
-		List<Ingredient> allIngredients = ingredientHelper.showAllIngredients();
-		Collections.sort(allIngredients, Comparator.comparing(Ingredient::getName));
-
-		// Display a list of ingredients for the user to choose from
-		System.out.println("Select an ingredient to delete:");
-		int index = 1;
-		for (Ingredient ingredient : allIngredients) {
-			System.out.println(index + ": " + ingredient.getName());
-			index++;
-		}
-
-		// Get the user's selection
-		String input = scanner.nextLine();
-		int selection = Integer.parseInt(input) - 1; // Convert to zero-based index
-		Ingredient ingredientToDelete = allIngredients.get(selection);
-
-		// Ask for confirmation before deleting
-		System.out.print("Are you sure you want to delete this ingredient? (yes/no): ");
-		String confirmation = scanner.nextLine();
-
-		// Check if the user confirmed the deletion
-		if ("yes".equalsIgnoreCase(confirmation)) {
-			if (isIngredientUsedInRecipes(ingredientToDelete.getName())) {
-				System.out.println("Ingredient is used in one or more recipes and cannot be deleted.");
-				return;
-			}
-
-			// If the user confirms, proceed to delete the ingredient
-			ingredientHelper.deleteIngredient(ingredientToDelete);
-			System.out.println("Ingredient deleted successfully!");
-		} else {
-			System.out.println("Ingredient deletion cancelled.");
-		}
-	}
-
 	// Helper methods to view all ingredients
 	private static void viewAllIngredients() {
 		try {
@@ -944,6 +779,164 @@ public final class StartProgram {
 			} else {
 				System.out.println("Invalid selection. Please try again.");
 			}
+		}
+	}
+
+	// Helper method to handle the main menu
+	public void runMenu(Scanner scanner) {
+		boolean continueRunning = true;
+		System.out.println("--- Welcome to our awesome recipe box! ---");
+
+		// Main menu loop
+		while (continueRunning) {
+			System.out.println("*  Select an option:");
+			System.out.println("   1 - Add a new recipe");
+			System.out.println("   2 - Edit a recipe");
+			System.out.println("   3 - Delete a recipe");
+			System.out.println("   4 - Search for recipes");
+			System.out.println("   5 - View recipe list");
+			System.out.println("   6 - Manage ingredients");
+			System.out.println("   7 - Manage categories");
+			System.out.println("   8 - Quit");
+
+			// Get the user's input
+			System.out.print("*  Your selection: ");
+			String input = scanner.nextLine();
+
+			// Handle the user's input
+			try {
+				int selection = Integer.parseInt(input);
+
+				// Handle the user's selection
+				switch (selection) {
+				case 1:
+					addRecipe(entityManager);
+					break;
+				case 2:
+					editRecipe();
+					break;
+				case 3:
+					deleteRecipe();
+					break;
+				case 4:
+					searchRecipes();
+					break;
+				case 5:
+					viewRecipeList();
+					break;
+				case 6:
+					manageIngredients(this);
+					break;
+				case 7:
+					// Initialize categoryHelper with the EntityManager
+					categoryHelper = new CategoryHelper(entityManager);
+					manageCategories();
+					break;
+				case 8:
+					recipeHelper.closeEntityManager();
+					System.out.println("   Goodbye!   ");
+					continueRunning = false;
+					break;
+				default:
+					System.out.println("Invalid selection. Please try again.");
+					break;
+				}
+				// Handle any exceptions that may occur
+			} catch (NumberFormatException e) {
+				System.out.println("Invalid input. Please enter a valid selection.");
+			} catch (DatabaseAccessException e) {
+				System.out.println("Error: " + e.getMessage());
+			}
+		}
+	}
+
+	// Helper method to check if an ingredient is used in any recipes
+	private boolean isIngredientUsedInRecipes(String ingredientName) throws DatabaseAccessException {
+		List<Recipe> recipes = recipeHelper.showAllRecipes();
+		for (Recipe recipe : recipes) {
+			List<Ingredient> ingredients = recipe.getIngredients();
+			for (Ingredient ingredient : ingredients) {
+				if (ingredient.getName().equals(ingredientName)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	// Helper method to edit an ingredient
+	private void editIngredient() throws DatabaseAccessException {
+		List<Ingredient> allIngredients = ingredientHelper.showAllIngredients();
+		Collections.sort(allIngredients, Comparator.comparing(Ingredient::getName));
+
+		// Display a list of ingredients for the user to choose from
+		System.out.println("Select an ingredient to edit:");
+		int index = 1;
+		for (Ingredient ingredient : allIngredients) {
+			System.out.println(index + ": " + ingredient.getName());
+			index++;
+		}
+
+		// Get the user's selection
+		String input = scanner.nextLine();
+		int selection = Integer.parseInt(input) - 1; // Convert to zero-based index
+		Ingredient existingIngredient = allIngredients.get(selection);
+
+		// Display the current name and prompt the user for a new name
+		System.out.println("Current Name: " + existingIngredient.getName());
+		System.out.print("Enter the new name: ");
+		String newName = scanner.nextLine();
+
+		// Check if the new name is empty
+		Ingredient anotherIngredient = ingredientHelper.findIngredientByName(newName);
+		if (anotherIngredient != null && anotherIngredient.getId() != existingIngredient.getId()) {
+			System.out.println("An ingredient with this name already exists.");
+			return;
+		}
+
+		// Update the ingredient's name
+		existingIngredient.setName(newName);
+		System.out.println("Name updated to: " + newName);
+
+		// Update the ingredient in the database
+		ingredientHelper.updateIngredient(existingIngredient);
+		System.out.println("Ingredient updated successfully!");
+	}
+
+	// Helper method to delete an ingredient by name
+	private void deleteIngredient() throws DatabaseAccessException {
+		List<Ingredient> allIngredients = ingredientHelper.showAllIngredients();
+		Collections.sort(allIngredients, Comparator.comparing(Ingredient::getName));
+
+		// Display a list of ingredients for the user to choose from
+		System.out.println("Select an ingredient to delete:");
+		int index = 1;
+		for (Ingredient ingredient : allIngredients) {
+			System.out.println(index + ": " + ingredient.getName());
+			index++;
+		}
+
+		// Get the user's selection
+		String input = scanner.nextLine();
+		int selection = Integer.parseInt(input) - 1; // Convert to zero-based index
+		Ingredient ingredientToDelete = allIngredients.get(selection);
+
+		// Ask for confirmation before deleting
+		System.out.print("Are you sure you want to delete this ingredient? (yes/no): ");
+		String confirmation = scanner.nextLine();
+
+		// Check if the user confirmed the deletion
+		if ("yes".equalsIgnoreCase(confirmation)) {
+			if (isIngredientUsedInRecipes(ingredientToDelete.getName())) {
+				System.out.println("Ingredient is used in one or more recipes and cannot be deleted.");
+				return;
+			}
+
+			// If the user confirms, proceed to delete the ingredient
+			ingredientHelper.deleteIngredient(ingredientToDelete);
+			System.out.println("Ingredient deleted successfully!");
+		} else {
+			System.out.println("Ingredient deletion cancelled.");
 		}
 	}
 }
