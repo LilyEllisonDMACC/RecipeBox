@@ -2,15 +2,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>View Ingredient</title>
+<title>View Ingredient: ${ingredient.name}</title>
 </head>
 <body>
 	<h1>${ingredient.name}</h1>
-	<h2>Used in the following recipes:</h2>
-	<ul>
-		<c:forEach var="recipe" items="${recipesUsingIngredient}">
-			<li>${recipe.name}</li>
-		</c:forEach>
-	</ul>
+	<!-- Display other details of the ingredient -->
 </body>
 </html>

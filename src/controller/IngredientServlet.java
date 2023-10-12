@@ -24,36 +24,22 @@ public class IngredientServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String action = request.getParameter("action");
+		String name = request.getParameter("name");
+		int id = Integer.parseInt(request.getParameter("id"));
+		Ingredient ingredient = new Ingredient(name);
+		ingredient.setId(id);
 
-		if (action.equals("add")) {
-			String name = request.getParameter("name");
-			Ingredient newIngredient = new Ingredient(name);
-			try {
-				ingredientHelper.insertIngredient(newIngredient);
-			} catch (DatabaseAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		try {
+			if (action.equals("add")) {
+				ingredientHelper.insertIngredient(ingredient);
+			} else if (action.equals("edit")) {
+				ingredientHelper.updateIngredient(ingredient);
+			} else if (action.equals("delete")) {
+				ingredientHelper.deleteIngredient(ingredient);
 			}
-		} else if (action.equals("edit")) {
-			int id = Integer.parseInt(request.getParameter("id"));
-			Ingredient ingredientToUpdate = new Ingredient(); // Replace with actual method to get Ingredient by ID
-			ingredientToUpdate.setId(id);
-			try {
-				ingredientHelper.updateIngredient(ingredientToUpdate);
-			} catch (DatabaseAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} else if (action.equals("delete")) {
-			int id = Integer.parseInt(request.getParameter("id"));
-			Ingredient ingredientToDelete = new Ingredient(); // Replace with actual method to get Ingredient by ID
-			ingredientToDelete.setId(id);
-			try {
-				ingredientHelper.deleteIngredient(ingredientToDelete);
-			} catch (DatabaseAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		} catch (DatabaseAccessException e) {
+			e.printStackTrace();
+			getServletContext().getRequestDispatcher("/errorPage.jsp").forward(request, response);
 		}
 
 		doGet(request, response);
@@ -69,6 +55,7 @@ public class IngredientServlet extends HttpServlet {
 			recipes = ingredientHelper.getRecipesUsingIngredient(ingredient);
 		} catch (DatabaseAccessException e) {
 			e.printStackTrace();
+			getServletContext().getRequestDispatcher("/errorPage.jsp").forward(request, response);
 		}
 		request.setAttribute("ingredient", ingredient);
 		request.setAttribute("recipes", recipes);
