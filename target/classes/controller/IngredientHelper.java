@@ -98,6 +98,14 @@ public class IngredientHelper {
 		return !query.getResultList().isEmpty();
 	}
 
+	// Gets a list of recipes that use a given ingredient
+	public List<Recipe> getRecipesUsingIngredient(Ingredient ingredient) throws DatabaseAccessException {
+		TypedQuery<Recipe> query = em.createQuery("SELECT r FROM Recipe r WHERE :ingredient MEMBER OF r.ingredients",
+				Recipe.class);
+		query.setParameter("ingredient", ingredient);
+		return query.getResultList();
+	}
+
 	// Retrieves all ingredients from the database
 	public List<Ingredient> showAllIngredients() throws DatabaseAccessException {
 		TypedQuery<Ingredient> query = em.createQuery("SELECT i FROM Ingredient i", Ingredient.class);

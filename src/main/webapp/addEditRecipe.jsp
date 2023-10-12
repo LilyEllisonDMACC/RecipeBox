@@ -6,13 +6,23 @@
 <meta charset="UTF-8">
 <title>Add A Recipe</title>
 <script>
+	function showNewCategoryInput() {
+		const dropdown = document.getElementById("categoryDropdown");
+		const newCategoryInput = document.getElementById("newCategoryInput");
+		if (dropdown.value === "New") {
+			newCategoryInput.style.display = "block";
+		} else {
+			newCategoryInput.style.display = "none";
+		}
+	}
+
 	let ingredientListItems = [];
 	let ingredientListAmounts = [];
 	let instructionsList = [];
 
 	function addIngredientWithQuantity() {
 		const newIngredient = document.getElementById("ingredientItem").value;
-		const newAmt = document.getElementById("ingredientAmount").value;
+		const newAmt = document.getElementById("ingredientAmt").value;
 
 		if (!newIngredient || !newAmt) {
 			alert("Both ingredient and quantity are required.");
@@ -68,12 +78,12 @@
 			for="preparationTime">Preparation Time (in minutes):</label> <input
 			type="number" id="preparationTime" min="1" name="preparationTime"
 			required> <br> <label for="categoryDropdown">Category:</label>
-		<select id="categoryDropdown" name="category" required>
+		<select id="categoryDropdown" name="category" required
+			onchange="showNewCategoryInput();">
 			<option value="" selected disabled>Select Category</option>
-			<!-- Populate this from your server-side code -->
-			<!-- <c:forEach var="category" items="${categories}">
-                <option value="${category.id}">${category.name}</option>
-            </c:forEach> -->
+			<c:forEach var="category" items="${categories}">
+				<option value="${category.id}">${category.name}</option>
+			</c:forEach>
 			<option value="New">-- Add New --</option>
 		</select> <input type="text" id="newCategoryInput" name="newCategory"
 			aria-label="New Category" style="display: none;"
@@ -83,15 +93,11 @@
 		<input type="text" id="ingredientAmt"> <input type="button"
 			value="Add Ingredient" onclick="addIngredientWithQuantity();">
 		<br>
-
 		<ol id="ingredientList"></ol>
-
 		<label for="instructionItem">Instructions:</label> <input type="text"
 			id="instructionItem"> <input type="button"
 			value="Add Instruction" onclick="addInstruction();"> <br>
-
 		<ol id="instructionList"></ol>
-
 		<input type="submit" value="Submit">
 	</form>
 	<a href="index.jsp">Cancel and Return to Homepage</a>
