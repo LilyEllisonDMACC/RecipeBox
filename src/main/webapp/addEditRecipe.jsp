@@ -22,68 +22,68 @@ pageEncoding="UTF-8"%>
 	let ingredientListAmounts = [];
 	let instructionsList = [];
 
-	function addIngredientWithQuantity() {
-		const newIngredient = document.getElementById("ingredientItem").value;
-		const newAmt = document.getElementById("ingredientAmt").value;
+// 	function addIngredientWithQuantity() {
+// 		const newIngredient = document.getElementById("ingredientItem").value;
+// 		const newAmt = document.getElementById("ingredientAmt").value;
 
-		if (!newIngredient || !newAmt) {
-			alert("Both ingredient and quantity are required.");
-			return;
-		}
+// 		if (!newIngredient || !newAmt) {
+// 			alert("Both ingredient and quantity are required.");
+// 			return;
+// 		}
 
-		ingredientListItems.push(newIngredient);
-		ingredientListAmounts.push(newAmt);
+// 		ingredientListItems.push(newIngredient);
+// 		ingredientListAmounts.push(newAmt);
 
-		const newIngredientListItemAmt = ("<li><span name = \"ingredientAmount\">" + newAmt + "</span><span name = \"ingredientItem\"> " + newIngredient + "</span></li>");
-		document.getElementById("ingredientList").innerHTML += newIngredientListItemAmt;
+// 		const newIngredientListItemAmt = ("<li><span name = \"ingredientAmount\">" + newAmt + "</span><span name = \"ingredientItem\"> " + newIngredient + "</span></li>");
+// 		document.getElementById("ingredientList").innerHTML += newIngredientListItemAmt;
 		
-		//const newIngredientListItem = "<li><span name='amount'>${newAmt}</span><span name='ingredient'> ${newIngredient}</span></li>";
-		//document.getElementById("ingredientList").innerHTML += newIngredientListItem;
+// 		//const newIngredientListItem = "<li><span name='amount'>${newAmt}</span><span name='ingredient'> ${newIngredient}</span></li>";
+// 		//document.getElementById("ingredientList").innerHTML += newIngredientListItem;
 
-		const hiddenAmtField = document.createElement("input");
-		hiddenAmtField.type = "hidden";
-		hiddenAmtField.name = "ingredientAmount";
-		hiddenAmtField.value = "${newAmt}";
-		document.forms[0].appendChild(hiddenField);
+// 		const hiddenAmtField = document.createElement("input");
+// 		hiddenAmtField.type = "hidden";
+// 		hiddenAmtField.name = "ingredientAmount";
+// 		hiddenAmtField.value = "${newAmt}";
+// 		document.forms[0].appendChild(hiddenField);
 		
-		const hiddenIngField = document.createElement("input");
-		hiddenIngField.type = "hidden";
-		hiddenIngField.name = "ingredientAmount";
-		hiddenIngField.value = "${newIngredient}";
-		document.forms[0].appendChild(hiddenField);
+// 		const hiddenIngField = document.createElement("input");
+// 		hiddenIngField.type = "hidden";
+// 		hiddenIngField.name = "ingredientAmount";
+// 		hiddenIngField.value = "${newIngredient}";
+// 		document.forms[0].appendChild(hiddenField);
 		
-		
-
-		document.getElementById("ingredientItem").value = "";
-		document.getElementById("ingredientAmt").value = "";
 		
 
-	}
-
-	function addInstruction() {
-		const newInstruction = document.getElementById("instructionItem").value;
-
-		if (!newInstruction) {
-			alert("Instruction is required.");
-			return;
-		}
-
-		instructionsList.push(newInstruction);
-
-		newInstructionListItem = ("<li name = \"instruction\">" + newInstruction + "</li>");
-		document.getElementById("instructionList").innerHTML += newInstructionListItem;
+// 		document.getElementById("ingredientItem").value = "";
+// 		document.getElementById("ingredientAmt").value = "";
 		
-		//const newInstructionListItem = `<li name='instruction'>${newInstruction}</li>`;
-		//document.getElementById("instructionList").innerHTML += newInstructionListItem;
 
-		const hiddenField = document.createElement("input");
-		hiddenField.type = "hidden";
-		hiddenField.name = "instructions";
-		hiddenField.value = newInstruction;
-		document.forms[0].appendChild(hiddenField);
+// 	}
 
-		document.getElementById("instructionItem").value = "";
-	}
+// 	function addInstruction() {
+// 		const newInstruction = document.getElementById("instructionItem").value;
+
+// 		if (!newInstruction) {
+// 			alert("Instruction is required.");
+// 			return;
+// 		}
+
+// 		instructionsList.push(newInstruction);
+
+// 		newInstructionListItem = ("<li name = \"instruction\">" + newInstruction + "</li>");
+// 		document.getElementById("instructionList").innerHTML += newInstructionListItem;
+		
+// 		//const newInstructionListItem = `<li name='instruction'>${newInstruction}</li>`;
+// 		//document.getElementById("instructionList").innerHTML += newInstructionListItem;
+
+// 		const hiddenField = document.createElement("input");
+// 		hiddenField.type = "hidden";
+// 		hiddenField.name = "instructions";
+// 		hiddenField.value = newInstruction;
+// 		document.forms[0].appendChild(hiddenField);
+
+// 		document.getElementById("instructionItem").value = "";
+// 	}
 </script>
 </head>
 <body>
@@ -102,7 +102,7 @@ pageEncoding="UTF-8"%>
 		<label for="categoryDropdown">Category:</label>
 		<select id="categoryDropdown" name="category" required onchange="showNewCategoryInput();">
 			<option value="" selected disabled>Select Category</option>
-			<c:forEach var="category" items="${categories}">
+			<c:forEach var="category" items="${allCategories}">
 				<option value="${category.id}">${category.name}</option>
 			</c:forEach>
 			<option value="New">-- Add New --</option>

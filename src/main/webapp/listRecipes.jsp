@@ -9,11 +9,27 @@ pageEncoding="UTF-8"%>
 </head>
 <body>
 	<h1>All Recipes</h1>
-	<ul>
-		<c:forEach var="recipe" items="${allRecipes}">
-			<li><a href="singleRecipeServlet?id=${recipe.id}">${recipe.name}</a></li>
-		</c:forEach>
-	</ul>
+	<!-- <ul>  -->
+	<form method = "post" action = "navigationServlet">
+		<table>
+			<c:forEach var="recipe" items="${allRecipes}">
+				<!-- <li><a href="singleRecipeServlet?id=${recipe.id}">${recipe.name}</a></li>  -->
+				<tr>
+					<td><input type="radio" name="id" value="${recipe.id}"></td>
+					<td><h2>${recipe.name}</h2></td>
+				</tr>
+				<tr>
+					<td colspan="2">Category: ${recipe.category.name}</td>
+				</tr>
+			</c:forEach>
+		</table>
+		<br />
+		<input type = "submit" value = "View" name = "doThisToRecipe">
+		<input type = "submit" value = "Edit" name = "doThisToRecipe">
+		<input type = "submit" value = "Delete" name = "doThisToRecipe">
+	</form>
+	<!-- </ul>  -->
 	<a href="index.html">Return to Main Menu</a>
+	<a href="addCategoriesToRecipeServlet">Add a Recipe</a>
 </body>
 </html>
