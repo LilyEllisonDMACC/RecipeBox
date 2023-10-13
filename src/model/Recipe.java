@@ -36,7 +36,7 @@ public class Recipe {
 	private String instructions;
 
 	// One-to-many relationship with Ingredient
-	@OneToMany(cascade = CascadeType.PERSIST)
+	@OneToMany(cascade = CascadeType.PERSIST, fetch=FetchType.EAGER)
 	private List<Ingredient> ingredients;
 
 	@Convert(converter = DateConverter.class)

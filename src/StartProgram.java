@@ -30,17 +30,17 @@ import java.util.Scanner;
 
 // Main class
 public final class StartProgram {
-	private static RecipeHelper recipeHelper;
-	private static IngredientHelper ingredientHelper;
-	private static CategoryHelper categoryHelper;
+	private static RecipeHelper recipeHelper = new RecipeHelper();
+	private static IngredientHelper ingredientHelper = new IngredientHelper();
+	private static CategoryHelper categoryHelper = new CategoryHelper();
 	private static EntityManager entityManager;
 	private static Scanner scanner = new Scanner(System.in);
 
 	// Constructor to initialize the program
 	public StartProgram(EntityManager entityManager) {
-		recipeHelper = new RecipeHelper(entityManager);
-		categoryHelper = new CategoryHelper(entityManager);
-		ingredientHelper = new IngredientHelper(entityManager);
+		//recipeHelper = new RecipeHelper(entityManager);
+		//categoryHelper = new CategoryHelper(entityManager);
+		//ingredientHelper = new IngredientHelper(entityManager);
 		StartProgram.entityManager = entityManager;
 	}
 
@@ -126,7 +126,7 @@ public final class StartProgram {
 					break;
 				case 7:
 					// Initialize categoryHelper with the EntityManager
-					categoryHelper = new CategoryHelper(entityManager);
+					categoryHelper = new CategoryHelper();
 					manageCategories();
 					break;
 				case 8:
@@ -210,11 +210,9 @@ public final class StartProgram {
 		Recipe newRecipe = new Recipe(name, servings, preparationTime, foundCategory, String.join("\n", instructions));
 
 		// Insert the recipe into the database
-		try {
-			recipeHelper.insertRecipe(newRecipe, ingredients);
-		} catch (DatabaseAccessException e) {
-			System.out.println("Error: " + e.getMessage());
-		}
+		
+			recipeHelper.insertRecipe(newRecipe);
+		
 
 		System.out.println("Recipe added successfully!");
 
@@ -349,7 +347,7 @@ public final class StartProgram {
 				}
 
 				// Update the recipe in the database
-				recipeHelper.updateRecipe(recipeToEdit);
+				//recipeHelper.updateRecipe(recipeToEdit);
 
 				// Display the entire updated recipe
 				System.out.println("Recipe updated successfully!");

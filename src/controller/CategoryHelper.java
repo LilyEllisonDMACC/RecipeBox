@@ -13,40 +13,30 @@ import exceptions.DatabaseAccessException;
 import model.Category;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
+import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
 // This class is used to perform CRUD operations on the Category table
 public class CategoryHelper {
-
-    // EntityManager is used to manage the connection to the database
-    private final EntityManager em;
-
-    // Constructor that initializes the EntityManager
-    public CategoryHelper(EntityManager em) {
-        this.em = em;
-    }
+	static EntityManagerFactory emfactory = Persistence.createEntityManagerFactory("RecipeBox");
 
     // Inserts a new category into the database
-    public void addCategory(Category category) throws DatabaseAccessException {
-        EntityTransaction tx = null;
-        try {
-            tx = em.getTransaction();
-            tx.begin();
-            em.persist(category);
-            tx.commit();
-        } catch (Exception e) {
-            if (tx != null && tx.isActive()) {
-                tx.rollback();
-            }
-            throw new DatabaseAccessException("Error adding category: " + e.getMessage());
-        }
+    public void addCategory(Category category) {
+    	EntityManager em = emfactory.createEntityManager();
+    	em.getTransaction().begin();
+        em.persist(category);
+        em.getTransaction().commit();
+        em.close();        
     }
-
+/**
     // Edits a category in the database
     public void updateCategory(Category existingCategory) throws DatabaseAccessException {
-        EntityTransaction tx = null;
+    	EntityManager em = emfactory.createEntityManager();
+    	EntityTransaction tx = null;
         try {
             tx = em.getTransaction();
             tx.begin();
@@ -62,7 +52,8 @@ public class CategoryHelper {
 
     // Deletes a category from the database
     public void deleteCategory(Category category) throws DatabaseAccessException {
-        EntityTransaction tx = null;
+    	EntityManager em = emfactory.createEntityManager();
+    	EntityTransaction tx = null;
         try {
             tx = em.getTransaction();
             tx.begin();
@@ -76,35 +67,44 @@ public class CategoryHelper {
             throw new DatabaseAccessException("Error deleting category: " + e.getMessage());
         }
     }
+    */
 
     // Retrieves a list of all categories from the database
-    public List<Category> getAllCategories() throws DatabaseAccessException {
-        try {
+    public List<Category> getAllCategories() {
+    	EntityManager em = emfactory.createEntityManager();
             TypedQuery<Category> query = em.createQuery("SELECT c FROM Category c", Category.class);
             return query.getResultList();
-        } catch (Exception e) {
-            throw new DatabaseAccessException("Error retrieving categories: " + e.getMessage());
-        }
     }
 
     // Retrieves a category by its ID
+/**
     public Category getCategoryById(int id) throws DatabaseAccessException {
-        try {
+    	EntityManager em = emfactory.createEntityManager();
+    	try {
             Category found = em.find(Category.class, id);
             return found;
         } catch (Exception e) {
             throw new DatabaseAccessException("Error getting category by ID: " + e.getMessage());
         }
     }
-
+*/
     // Retrieves a category by its name, or returns null if not found
     public Category getCategoryByName(String categoryName) {
-            TypedQuery<Category> typedQuery = em
-                    .createQuery("SELECT c FROM Category c WHERE LOWER(c.name) = :selectedName", Category.class);
+    	EntityManager em = emfactory.createEntityManager();
+    	em.getTransaction().begin();
+    	TypedQuery<Category> typedQuery = em.createQuery("SELECT c FROM Category c WHERE LOWER(c.name) = :selectedName", Category.class);
             typedQuery.setParameter("selectedName", categoryName.toLowerCase());
-            List<Category> categories = typedQuery.getResultList();
+            typedQuery.setMaxResults(1);
+            
+            Category foundCategory;
+            try {
+            	foundCategory = typedQuery.getSingleResult();
+            } catch (NoResultException ex) {
+            	foundCategory = new Category(categoryName);
+            }
+            em.close();
 
-            return categories.get(0); // Return the first matching category
+            return foundCategory; // Return the first matching category
             
         
     }

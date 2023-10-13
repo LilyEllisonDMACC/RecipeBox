@@ -13,16 +13,24 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet(name = "IngredientServlet", value = "/ingredientServlet")
-public class IngredientServlet extends HttpServlet {
+public class CreateIngredientServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private IngredientHelper ingredientHelper;
 
-	public void init() {
-		ingredientHelper = new IngredientHelper(null);
+	public CreateIngredientServlet() {
+		super();
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		IngredientHelper ingredientHelper = new IngredientHelper();
+		
+		String ingredientName = request.getParameter("ingredientName"); // Assuming you pass the name as a parameter
+		//String ingredientAmount = request.getParameter("ingredientAmt");
+		Ingredient ingredient = new Ingredient(ingredientName);
+		
+		ingredientHelper.insertIngredient(ingredient);
+		
+		/**
 		String action = request.getParameter("action");
 
 		if (action.equals("add")) {
@@ -57,12 +65,14 @@ public class IngredientServlet extends HttpServlet {
 		}
 
 		doGet(request, response);
+		*/
 	}
-
+/**
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		IngredientHelper ingredientHelper = new IngredientHelper();
 		String ingredientName = request.getParameter("name"); // Assuming you pass the name as a parameter
-		Ingredient ingredient = null;
+		Ingredient ingredient = ;
 		List<Recipe> recipes = null;
 		try {
 			ingredient = ingredientHelper.findIngredientByName(ingredientName);
@@ -74,5 +84,5 @@ public class IngredientServlet extends HttpServlet {
 		request.setAttribute("recipes", recipes);
 		getServletContext().getRequestDispatcher("/viewIngredient.jsp").forward(request, response);
 	}
-
+*/
 }

@@ -3,6 +3,9 @@ package controller;
 import exceptions.DatabaseAccessException;
 import model.Category;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,16 +15,33 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet(name = "CategoryServlet", value = "/categoryServlet")
-public class CategoryServlet extends HttpServlet {
+public class CreateCategoryServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private CategoryHelper categoryHelper;
-
-	public void init() {
-		categoryHelper = new CategoryHelper(null);
+	
+	public CreateCategoryServlet() {
+		super();
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("RecipeBox");
+		EntityManager em = emf.createEntityManager();
+		RecipeHelper rh = new RecipeHelper();
+		IngredientHelper ih = new IngredientHelper();
+		CategoryHelper ch = new CategoryHelper();
+		
+		String name = request.getParameter("name");
+		Category newCategory = new Category(name);
+		
+		ch.addCategory(newCategory);
+		
+		em.close();
+		getServletContext().getRequestDispatcher("/listCategories.jsp").forward(request, response);
+	}
+		
+		/**
 		String action = request.getParameter("action");
 
 		if (action.equals("add")) {
@@ -52,11 +72,10 @@ public class CategoryServlet extends HttpServlet {
 			}
 		}
 
-		doGet(request, response);
-	}
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+
+	//protected void doGet(HttpServletRequest request, HttpServletResponse response)
+		//	throws ServletException, IOException {
 		List<Category> categories = null;
 		try {
 			categories = categoryHelper.getAllCategories();
@@ -66,5 +85,12 @@ public class CategoryServlet extends HttpServlet {
 		}
 		request.setAttribute("categories", categories);
 		getServletContext().getRequestDispatcher("/listCategories.jsp").forward(request, response);
+	//}
+	 * 
+	 */
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		doGet(request, response);
 	}
 }

@@ -1,5 +1,7 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,20 +34,30 @@
 		ingredientListItems.push(newIngredient);
 		ingredientListAmounts.push(newAmt);
 
-		newIngredientListItemAmt = ("<li><span name = \"ingredientAmount\">" + newAmt + "</span><span name = \"ingredientItem\"> " + newIngredient + "</span></li>");
+		const newIngredientListItemAmt = ("<li><span name = \"ingredientAmount\">" + newAmt + "</span><span name = \"ingredientItem\"> " + newIngredient + "</span></li>");
 		document.getElementById("ingredientList").innerHTML += newIngredientListItemAmt;
 		
 		//const newIngredientListItem = "<li><span name='amount'>${newAmt}</span><span name='ingredient'> ${newIngredient}</span></li>";
 		//document.getElementById("ingredientList").innerHTML += newIngredientListItem;
 
-		const hiddenField = document.createElement("input");
-		hiddenField.type = "hidden";
-		hiddenField.name = "ingredients";
-		hiddenField.value = `${newIngredient}|${newAmt}`;
+		const hiddenAmtField = document.createElement("input");
+		hiddenAmtField.type = "hidden";
+		hiddenAmtField.name = "ingredientAmount";
+		hiddenAmtField.value = "${newAmt}";
 		document.forms[0].appendChild(hiddenField);
+		
+		const hiddenIngField = document.createElement("input");
+		hiddenIngField.type = "hidden";
+		hiddenIngField.name = "ingredientAmount";
+		hiddenIngField.value = "${newIngredient}";
+		document.forms[0].appendChild(hiddenField);
+		
+		
 
 		document.getElementById("ingredientItem").value = "";
 		document.getElementById("ingredientAmt").value = "";
+		
+
 	}
 
 	function addInstruction() {
@@ -97,21 +109,23 @@
 		</select> 
 		<input type="text" id="newCategoryInput" name="newCategory" aria-label="New Category" style="display: none;" placeholder="Enter new category"> <br> 
 		
-		<label for="ingredientItem">Ingredients:</label> 
-		<input type="text" id="ingredientItem"> 
+		<label for="ingredientItem">Ingredients, separated by commas:</label> 
+		<input type="text" id="ingredientItems" name="ingredients"> <br>
 		
+		<!-- 
 		<label for="ingredientAmt">Quantity:</label>
 		<input type="text" id="ingredientAmt"> 
 		<input type="button" value="Add Ingredient" onclick="addIngredientWithQuantity();">	<br>
 		<ol id="ingredientList"></ol>
-		
-		<label for="instructionItem">Instructions:</label> 
-		<input type="text" id="instructionItem"> 
+		 -->
+		<label for="instructionItem">Instructions, separated by commas:</label> 
+		<input type="text" id="instructionItem" name="instructions"> <br>
+		<!-- 
 		<input type="button" value="Add Instruction" onclick="addInstruction();"> <br>
 		<ol id="instructionList"></ol>
-		
+		 -->
 		<input type="submit" value="Submit">
 	</form>
-	<a href="index.jsp">Cancel and Return to Homepage</a>
+	<a href="index.html">Return to Main Menu</a>
 </body>
 </html>
