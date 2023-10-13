@@ -162,4 +162,13 @@ public class Recipe {
 				+ "\nIngredients:\n" + ingredientList + "\n---------------------------" + "\nInstructions:\n"
 				+ instructions + "\n---------------------------";
 	}
+	
+	public String listIngredients() {
+		StringBuilder ingredientList = new StringBuilder();
+		for (Ingredient ingredient : this.ingredients) { // Assuming 'ingredients' is your List<Ingredient>
+			ingredientList.append(ingredient.getName()).append(", ");
+		}
+		String ingredientString = ingredientList.toString();
+		return ingredientString;
+	}
 }

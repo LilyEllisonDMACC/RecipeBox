@@ -7,17 +7,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import model.Category;
+
 /**
- * Servlet implementation class AddCategoriesToRecipeServlet
+ * Servlet implementation class EditCategoryServlet
  */
-@WebServlet("/addCategoriesToRecipeServlet")
-public class AddCategoriesToRecipeServlet extends HttpServlet {
+@WebServlet("/editCategoryServlet")
+public class EditCategoryServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AddCategoriesToRecipeServlet() {
+    public EditCategoryServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -26,22 +28,25 @@ public class AddCategoriesToRecipeServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		CategoryHelper ch = new CategoryHelper();
-		
-		request.setAttribute("allCategories", ch.getAllCategories());
-		
-		if(ch.getAllCategories().isEmpty()) {
-			request.setAttribute("allCategories", " ");
-		}
-		getServletContext().getRequestDispatcher("/addRecipe.jsp").forward(request, response);
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		CategoryHelper ch = new CategoryHelper();
+		
+		String name = request.getParameter("name");
+		Integer tempId = Integer.parseInt(request.getParameter("id"));
+		
+		Category categoryToUpdate = ch.getCategoryById(tempId);
+		categoryToUpdate.setName(name);
+		
+		ch.updateCategory(categoryToUpdate);
+		
+		getServletContext().getRequestDispatcher("/viewAllCategoriesServlet").forward(request, response);
 	}
 
 }

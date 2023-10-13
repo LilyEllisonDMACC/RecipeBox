@@ -1,6 +1,5 @@
 package controller;
 
-import exceptions.DatabaseAccessException;
 import model.Category;
 import model.Ingredient;
 import model.Recipe;
@@ -112,7 +111,7 @@ public class CreateRecipeServlet extends HttpServlet {
 
 
 		// Redirect to another page (e.g., viewAllRecipes.jsp)
-		getServletContext().getRequestDispatcher("viewRecipeServlet").forward(request, response);
+		getServletContext().getRequestDispatcher("/viewAllRecipesServlet").forward(request, response);
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

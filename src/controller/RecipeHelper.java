@@ -9,7 +9,6 @@
 
 package controller;
 
-import exceptions.DatabaseAccessException;
 import model.Category;
 import model.Ingredient;
 import model.Recipe;
@@ -40,21 +39,14 @@ public class RecipeHelper {
 	}
 
 	// Updates a recipe in the database
-	/**public void updateRecipe(Recipe updatedRecipe) throws DatabaseAccessException {
-		EntityTransaction tx = null;
-		try {
-			tx = em.getTransaction();
-			tx.begin();
-			em.merge(updatedRecipe);
-			tx.commit();
-		} catch (Exception e) {
-			if (tx != null && tx.isActive()) {
-				tx.rollback();
-			}
-			throw new DatabaseAccessException("Error updating recipe: " + e.getMessage());
-		}
+	public void updateRecipe(Recipe updatedRecipe)  {
+		EntityManager em = emfactory.createEntityManager();
+		em.getTransaction().begin();
+		em.merge(updatedRecipe);
+		em.getTransaction().commit();
+		
 	}
-*/
+
 	// Deletes a recipe from the database
 	public void deleteRecipe(Recipe toDelete) {
 

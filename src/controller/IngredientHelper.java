@@ -9,7 +9,6 @@
 
 package controller;
 
-import exceptions.DatabaseAccessException;
 import model.Ingredient;
 import model.Recipe;
 
@@ -47,7 +46,7 @@ public class IngredientHelper {
 	}
 
 	// Edits an existing ingredient
-	public void editIngredient(Ingredient toEdit, String newName) throws DatabaseAccessException {
+	public void editIngredient(Ingredient toEdit, String newName) {
 		EntityManager em = emfactory.createEntityManager();
 		em.getTransaction().begin();
 		toEdit.setName(newName);

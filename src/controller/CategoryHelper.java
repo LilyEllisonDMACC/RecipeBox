@@ -9,7 +9,6 @@
 
 package controller;
 
-import exceptions.DatabaseAccessException;
 import model.Category;
 
 import javax.persistence.EntityManager;
@@ -32,42 +31,33 @@ public class CategoryHelper {
         em.getTransaction().commit();
         em.close();        
     }
-/**
+
     // Edits a category in the database
-    public void updateCategory(Category existingCategory) throws DatabaseAccessException {
+    public void updateCategory(Category existingCategory)  {
     	EntityManager em = emfactory.createEntityManager();
     	EntityTransaction tx = null;
-        try {
+       
             tx = em.getTransaction();
             tx.begin();
             em.merge(existingCategory);
             tx.commit();
-        } catch (Exception e) {
-            if (tx != null && tx.isActive()) {
-                tx.rollback();
-            }
-            throw new DatabaseAccessException("Error updating category: " + e.getMessage());
-        }
+       
     }
+    
 
     // Deletes a category from the database
-    public void deleteCategory(Category category) throws DatabaseAccessException {
+    public void deleteCategory(Category category)  {
     	EntityManager em = emfactory.createEntityManager();
     	EntityTransaction tx = null;
-        try {
+       
             tx = em.getTransaction();
             tx.begin();
             Category foundCategory = em.find(Category.class, category.getId());
             em.remove(foundCategory);
             tx.commit();
-        } catch (Exception e) {
-            if (tx != null && tx.isActive()) {
-                tx.rollback();
-            }
-            throw new DatabaseAccessException("Error deleting category: " + e.getMessage());
-        }
+       
     }
-    */
+    
 
     // Retrieves a list of all categories from the database
     public List<Category> getAllCategories() {
@@ -77,17 +67,14 @@ public class CategoryHelper {
     }
 
     // Retrieves a category by its ID
-/**
-    public Category getCategoryById(int id) throws DatabaseAccessException {
+    public Category getCategoryById(int id)  {
     	EntityManager em = emfactory.createEntityManager();
-    	try {
+    	
             Category found = em.find(Category.class, id);
             return found;
-        } catch (Exception e) {
-            throw new DatabaseAccessException("Error getting category by ID: " + e.getMessage());
-        }
+        
     }
-*/
+
     // Retrieves a category by its name, or returns null if not found
     public Category getCategoryByName(String categoryName) {
     	EntityManager em = emfactory.createEntityManager();

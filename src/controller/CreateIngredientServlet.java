@@ -1,6 +1,5 @@
 package controller;
 
-import exceptions.DatabaseAccessException;
 import model.Ingredient;
 import model.Recipe;
 
