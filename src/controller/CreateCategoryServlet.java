@@ -1,6 +1,5 @@
 package controller;
 
-import exceptions.DatabaseAccessException;
 import model.Category;
 
 import javax.persistence.EntityManager;

@@ -9,7 +9,6 @@
 
 package controller;
 
-import exceptions.DatabaseAccessException;
 import model.Category;
 import model.Ingredient;
 import model.Recipe;

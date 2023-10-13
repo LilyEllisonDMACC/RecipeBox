@@ -5,19 +5,20 @@ pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Add/Edit Category</title>
+<title>Edit Category</title>
 </head>
 <body>
 	<h1>Add/Edit Category</h1>
-	<form action="CategoryServlet" method="post">
+	<form action="editCategoryServlet" method="post">
 		
-		<input type="hidden" name="id" value="${category.id}"> 
+		<input type="hidden" name="id" value="${categoryToEdit.id}"> 
 		
 		<label for="name">Name:</label> 
-		<input type="text" id="name" name="name" value="${category.name}" required> 
+		<input type="text" id="name" name="name" value="${categoryToEdit.name}" required> 
 		
 		<input type="submit" value="Save">
 	</form>
 	<a href="index.html">Return to Main Menu</a>
+	<a href="/categoryNavigationServlet">View All Categories</a>
 </body>
 </html>

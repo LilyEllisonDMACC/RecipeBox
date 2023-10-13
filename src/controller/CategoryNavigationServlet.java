@@ -7,19 +7,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import model.Recipe;
+
+import model.Category;
 
 /**
- * Servlet implementation class NavigationServlet
+ * Servlet implementation class CategoryNavigationServlet
  */
-@WebServlet("/navigationServlet")
-public class NavigationServlet extends HttpServlet {
+@WebServlet("/categoryNavigationServlet")
+public class CategoryNavigationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public NavigationServlet() {
+    public CategoryNavigationServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -36,42 +37,30 @@ public class NavigationServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RecipeHelper rh = new RecipeHelper();
-		String act = request.getParameter("doThisToRecipe");
+		CategoryHelper ch = new CategoryHelper();
+		String act = request.getParameter("doThisToCategory");
 		
-		String path = "/viewAllRecipesServlet";
+		String path = "/viewAllCategoriesServlet";
 		
 		if(act.equals("Delete")) {
 			try {
 				Integer tempId = Integer.parseInt(request.getParameter("id"));
-				Recipe recipeToDelete = rh.getRecipeById(tempId);
-				rh.deleteRecipe(recipeToDelete);				
-			} catch(NumberFormatException e) {
-				System.out.println("Forgot to select a recipe.");
-			}
+				Category categoryToDelete = ch.getCategoryById(tempId);
+				ch.deleteCategory(categoryToDelete);				
+			} catch(Exception e) {
+				System.out.println("Forgot to select a category or category is in use.");
+			} 
 		} else if(act.equals("Edit")) {
 			try {
 				Integer tempId = Integer.parseInt(request.getParameter("id"));
-				Recipe recipeToEdit = rh.getRecipeById(tempId);
-				request.setAttribute("recipeToEdit", recipeToEdit);
-				path = "/editRecipe.jsp";				
+				Category categoryToEdit = ch.getCategoryById(tempId);
+				request.setAttribute("categoryToEdit", categoryToEdit);
+				path = "/editCategory.jsp";				
 			} catch(NumberFormatException e) {
-				System.out.println("Forgot to select a recipe.");
+				System.out.println("Forgot to select a category.");
 			}
-		}else if(act.equals("Add")) {
-			path = "/addRecipe.jsp";
-		}else if(act.equals("View")) {
-			try {
-				Integer tempId = Integer.parseInt(request.getParameter("id"));
-				Recipe recipeToView = rh.getRecipeById(tempId);
-				request.setAttribute("recipeToView", recipeToView);
-				path = "/viewRecipe.jsp";
-			} catch(NumberFormatException e) {
-				System.out.println("Forgot to select a recipe.");
-			}
-			
 		}
-		getServletContext().getRequestDispatcher(path).forward(request, response);
+			getServletContext().getRequestDispatcher(path).forward(request, response);
 	}
 
 }

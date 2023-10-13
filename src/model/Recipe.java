@@ -28,7 +28,7 @@ public class Recipe {
 	private int preparationTime;
 
 	// Many-to-one relationship with Category
-	@ManyToOne(cascade = CascadeType.PERSIST, fetch=FetchType.EAGER)
+	@ManyToOne(cascade = CascadeType.MERGE, fetch=FetchType.EAGER)
 	private Category category;
 
 	// One-to-many relationship with Ingredient
@@ -161,5 +161,14 @@ public class Recipe {
 				+ (lastModified != null ? sdf.format(lastModified) : "N/A") + "\n---------------------------"
 				+ "\nIngredients:\n" + ingredientList + "\n---------------------------" + "\nInstructions:\n"
 				+ instructions + "\n---------------------------";
+	}
+	
+	public String listIngredients() {
+		StringBuilder ingredientList = new StringBuilder();
+		for (Ingredient ingredient : this.ingredients) { // Assuming 'ingredients' is your List<Ingredient>
+			ingredientList.append(ingredient.getName()).append(", ");
+		}
+		String ingredientString = ingredientList.toString();
+		return ingredientString;
 	}
 }
