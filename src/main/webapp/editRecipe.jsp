@@ -20,7 +20,9 @@ function showNewCategoryInput() {
 </head>
 <body>
 
-	<form action = "editRecipeServlet" method = "post"></form>		
+	<form action = "editRecipeServlet" method = "post">
+	
+	<input type="hidden" name="id" value="${recipeToEdit.id}"> 	
 		<label for="name">Recipe Name:</label> 
 		<input type="text" id="name" name="name" required value = "${recipeToEdit.name}"> <br> 
 		
@@ -40,14 +42,15 @@ function showNewCategoryInput() {
 		</select> 
 		<input type="text" id="newCategoryInput" name="newCategory" aria-label="New Category" style="display: none;" placeholder="Enter new category"> <br> 
 		
-		<label for="ingredientItem">Ingredients, separated by commas:</label> 
+		<label for="ingredientItems">Ingredients, separated by commas:</label> 
 		<input type="text" id="ingredientItems" name="ingredients" value = "${recipeToEdit.listIngredients()}"> <br>
 		
 
 		<label for="instructionItem">Instructions, separated by commas:</label> 
 		<input type="text" id="instructionItem" name="instructions" value = "${recipeToEdit.instructions}"> <br>
 
-		<input type="submit" value="Submit">
+		<input type="submit" value="Save">
+		</form>	
 
 </body>
 </html>

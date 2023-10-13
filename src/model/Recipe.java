@@ -28,7 +28,7 @@ public class Recipe {
 	private int preparationTime;
 
 	// Many-to-one relationship with Category
-	@ManyToOne(cascade = CascadeType.MERGE, fetch=FetchType.EAGER)
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch=FetchType.EAGER)
 	private Category category;
 
 	// One-to-many relationship with Ingredient

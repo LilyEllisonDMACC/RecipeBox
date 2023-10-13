@@ -54,7 +54,14 @@ public class NavigationServlet extends HttpServlet {
 				Integer tempId = Integer.parseInt(request.getParameter("id"));
 				Recipe recipeToEdit = rh.getRecipeById(tempId);
 				request.setAttribute("recipeToEdit", recipeToEdit);
-				path = "/editRecipe.jsp";				
+				path = "/editRecipe.jsp";
+				CategoryHelper ch = new CategoryHelper();
+				
+				request.setAttribute("allCategories", ch.getAllCategories());
+				
+				if(ch.getAllCategories().isEmpty()) {
+					request.setAttribute("allCategories", " ");
+				}
 			} catch(NumberFormatException e) {
 				System.out.println("Forgot to select a recipe.");
 			}
