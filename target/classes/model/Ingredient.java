@@ -2,7 +2,6 @@
  * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
  * Oct 6, 2023
- *
  * @author Adam Reese - amreese3
  * CIS175 - Fall 2023
  * Oct 6, 2023
@@ -53,6 +52,8 @@ public class Ingredient {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	
 
 	// Override toString() method
 	@Override
