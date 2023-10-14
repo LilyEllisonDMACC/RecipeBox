@@ -1,4 +1,3 @@
-<-- Recipe Details Page -->
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -45,11 +44,28 @@ body {
 	margin-left: 20px;
 }
 
-.center {
-	border: 5px solid;
-	margin: auto;
-	width: 50%;
-	padding: 10px;
+a, button {
+	text-decoration: none;
+	color: black;
+	background-color: white;
+	padding: 10px 20px;
+	border: 1px solid black;
+	border-radius: 5px;
+	font-size: 16px;
+}
+
+.edit-button-div {
+	margin-bottom: 20px;
+}
+
+.link-buttons-div {
+	/* Add any additional styling here */
+	
+}
+
+a:hover, button:hover {
+	background-color: grey;
+	color: white;
 }
 </style>
 </head>
@@ -94,9 +110,15 @@ body {
 	</div>
 	<br>
 	<div style="text-align: center;">
-		<a href="index.jsp">Return to Main Menu</a> <a
-			href="editRecipeServlet?id=${recipeToView.id}">Edit Recipe</a> <a
-			href="viewAllRecipesServlet">View All Recipes</a>
+		<div class="edit-button-div">
+			<button type="button"
+				onclick="window.location.href='editRecipeServlet?action=edit&id=${recipeToView.id}'">Edit
+				This Recipe</button>
+		</div>
+		<div class="link-buttons-div">
+			<a href="index.jsp">Return to Main Menu</a> <a
+				href="viewAllRecipesServlet">View All Recipes</a>
+		</div>
 	</div>
 </body>
 </html>

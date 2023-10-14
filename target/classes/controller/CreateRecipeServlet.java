@@ -27,14 +27,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/createRecipeServlet")
+// Class that creates a new Recipe object and inserts it into the database
 public class CreateRecipeServlet extends HttpServlet {
-
 	private static final long serialVersionUID = 1L;
 
+	// Default constructor
 	public CreateRecipeServlet() {
 		super();
 	}
 
+	// Method that handles GET requests
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		EntityManagerFactory emf = null;
@@ -50,6 +52,7 @@ public class CreateRecipeServlet extends HttpServlet {
 			int servings = Integer.parseInt(request.getParameter("servings"));
 			int prepTime = Integer.parseInt(request.getParameter("preparationTime"));
 
+			// Get category
 			String category = request.getParameter("category");
 			Category categoryObj;
 			if (category.equals("New")) {
@@ -59,9 +62,11 @@ public class CreateRecipeServlet extends HttpServlet {
 				categoryObj = ch.getCategoryById(Integer.parseInt(category));
 			}
 
+			// Get ingredients and instructions
 			String ingredientBlock = request.getParameter("ingredients");
 			String instructionsBlock = request.getParameter("instructions");
 
+			// Separate ingredients and instructions into arrays
 			String[] ingredientsSeparate = ingredientBlock.split("[,]", 0);
 			String[] instructionsSeparate = instructionsBlock.split("[,]", 0);
 
@@ -97,6 +102,7 @@ public class CreateRecipeServlet extends HttpServlet {
 		getServletContext().getRequestDispatcher("/viewAllRecipesServlet").forward(request, response);
 	}
 
+	// Method that handles POST requests
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doGet(request, response);

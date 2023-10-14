@@ -30,6 +30,7 @@ public class IngredientHelper {
 		//this.em = em;
 	//}
 
+	// Constructor that initializes the EntityManager
 	public IngredientHelper(EntityManager em) {
 	}
 

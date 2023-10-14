@@ -26,6 +26,7 @@ import model.Recipe;
  * Servlet implementation class ViewRecipeServlet
  */
 @WebServlet("/viewAllRecipesServlet")
+// List all recipes in the database and forward to listRecipes.jsp
 public class ViewAllRecipesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

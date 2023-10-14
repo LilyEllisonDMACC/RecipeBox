@@ -25,6 +25,7 @@ import model.Category;
  * Servlet implementation class ViewAllCategoriesServlet
  */
 @WebServlet("/viewAllCategoriesServlet")
+// List all categories in the database and display them in a list
 public class ViewAllCategoriesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

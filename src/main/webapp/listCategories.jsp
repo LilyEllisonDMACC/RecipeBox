@@ -1,4 +1,3 @@
-<-- List of Categories -->
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -26,13 +25,20 @@ table {
 	border: 1px solid black;
 }
 
-td, th {
-	padding: 1rem;
+th {
+	padding: 1rem 2rem;
 	border-bottom: 2px solid black;
+	text-align: center;
 }
 
-th {
-	text-align: left;
+th.actions {
+    padding-right: 10px;
+}
+
+td {
+	padding: 1rem;
+	border-bottom: 2px solid black;
+	text-align: center;
 }
 
 td:last-child {
@@ -59,6 +65,7 @@ a.button:hover {
 	color: white;
 }
 </style>
+
 </head>
 <body>
 
@@ -70,8 +77,8 @@ a.button:hover {
 
 	<table>
 		<tr>
-			<th style='text-align: left'>Category</th>
-			<th style='text-align: right'>Actions</th>
+			<th>Category</th>
+			<th class="actions">Actions</th>
 		</tr>
 		<c:forEach var="category" items="${allCategories}">
 			<tr>
@@ -81,7 +88,7 @@ a.button:hover {
 						style="display: inline;">
 						<input type="hidden" name="action" value="edit"> <input
 							type="hidden" name="id" value="${category.id}">
-						<button type="submit">Edit</button>
+						<button type="submit" class="actions-button">Edit</button>
 					</form>
 					<form action="editCategoryServlet" method="get"
 						style="display: inline;">
@@ -90,7 +97,6 @@ a.button:hover {
 						<button type="submit">Delete</button>
 					</form>
 				</td>
-
 			</tr>
 		</c:forEach>
 	</table>

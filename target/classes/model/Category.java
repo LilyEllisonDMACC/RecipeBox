@@ -12,6 +12,7 @@ package model;
 
 import javax.persistence.*;
 
+// Category class
 @Entity
 @Table(name = "category")
 public class Category {
@@ -37,22 +38,19 @@ public class Category {
         this.name = name;
     }
 
-    // Getter for id
+    // Getters and setters
     public int getId() {
         return id;
     }
 
-    // Setter for id
     public void setId(int id) {
         this.id = id;
     }
 
-    // Getter for name
     public String getName() {
         return name;
     }
 
-    // Setter for name
     public void setName(String name) {
         this.name = name;
     }

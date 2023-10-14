@@ -24,9 +24,11 @@ import javax.servlet.http.HttpServletResponse;
 import model.Category;
 
 @WebServlet(name = "CategoryServlet", value = "/categoryServlet")
+// This class is used to create a new category
 public class CreateCategoryServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	// Default constructor
 	public CreateCategoryServlet() {
 		super();
 	}

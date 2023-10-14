@@ -1,4 +1,3 @@
-<-- Main page for the Recipe Box application. -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -51,7 +50,7 @@ a:hover {
 	<p>What would you like to do?</p>
 	<ul>
 		<li><a href="addCategoriesToRecipeServlet">Add a Recipe</a></li>
-		<li><a href="viewAllRecipesServlet">View Recipe List</a></li>
+		<li><a href="viewAllRecipesServlet">Manage Recipes</a></li>
 		<li><a href="viewAllCategoriesServlet">Manage Categories</a></li>
 	</ul>
 </body>
