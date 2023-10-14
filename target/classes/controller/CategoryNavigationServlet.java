@@ -37,7 +37,7 @@ public class CategoryNavigationServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		CategoryHelper ch = new CategoryHelper();
+		CategoryHelper ch = new CategoryHelper(null);
 		String act = request.getParameter("doThisToCategory");
 		
 		String path = "/viewAllCategoriesServlet";

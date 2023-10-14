@@ -19,14 +19,13 @@ public class AddCategoriesToRecipeServlet extends HttpServlet {
      */
     public AddCategoriesToRecipeServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		CategoryHelper ch = new CategoryHelper();
+		CategoryHelper ch = new CategoryHelper(null);
 		
 		request.setAttribute("allCategories", ch.getAllCategories());
 		

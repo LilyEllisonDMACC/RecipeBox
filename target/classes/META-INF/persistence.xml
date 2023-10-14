@@ -5,14 +5,14 @@
 	<persistence-unit name="RecipeBox" transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<class>model.Recipe</class>
-		<class>model.Ingredient</class>
 		<class>model.Category</class>
+		<class>model.Ingredient</class>
 		<class>util.DateConverter</class>
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
 			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/recipebox"/>
 			<property name="javax.persistence.jdbc.user" value="root"/>
-			<property name="javax.persistence.jdbc.password" value="G00dStud3nt!"/>
+			<property name="javax.persistence.jdbc.password" value="toonami123"/>
 			<property name="eclipselink.ddl-generation" value="create-tables"/>
 		</properties>
 	</persistence-unit>

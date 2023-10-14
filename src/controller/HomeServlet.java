@@ -13,6 +13,6 @@ public class HomeServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        getServletContext().getRequestDispatcher("/index.html").forward(request, response);
+        getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
     }
 }

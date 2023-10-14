@@ -28,7 +28,7 @@ public class Recipe {
 	private int preparationTime;
 
 	// Many-to-one relationship with Category
-	@ManyToOne(cascade = CascadeType.PERSIST, fetch=FetchType.EAGER)
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
 	private Category category;
 
 	// One-to-many relationship with Ingredient
@@ -36,7 +36,7 @@ public class Recipe {
 	private String instructions;
 
 	// One-to-many relationship with Ingredient
-	@OneToMany(cascade = CascadeType.PERSIST, fetch=FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
 	private List<Ingredient> ingredients;
 
 	@Convert(converter = DateConverter.class)
@@ -134,6 +134,22 @@ public class Recipe {
 		this.instructions = instructions;
 	}
 
+	public java.util.Date getLastModified() {
+		return lastModified;
+	}
+
+	public void setLastModified(java.util.Date lastModified) {
+		this.lastModified = lastModified;
+	}
+
+	public java.util.Date getDateAdded() {
+		return dateAdded;
+	}
+
+	public void setDateAdded(java.util.Date dateAdded) {
+		this.dateAdded = dateAdded;
+	}
+
 	@PrePersist
 	protected void onCreate() {
 		dateAdded = new java.util.Date();
@@ -162,7 +178,7 @@ public class Recipe {
 				+ "\nIngredients:\n" + ingredientList + "\n---------------------------" + "\nInstructions:\n"
 				+ instructions + "\n---------------------------";
 	}
-	
+
 	public String listIngredients() {
 		StringBuilder ingredientList = new StringBuilder();
 		for (Ingredient ingredient : this.ingredients) { // Assuming 'ingredients' is your List<Ingredient>

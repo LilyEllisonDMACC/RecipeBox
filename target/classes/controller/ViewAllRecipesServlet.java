@@ -3,6 +3,7 @@ package controller;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,36 +18,22 @@ import model.Recipe;
 @WebServlet("/viewAllRecipesServlet")
 public class ViewAllRecipesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ViewAllRecipesServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RecipeHelper rh = new RecipeHelper();
-		List<Recipe> recipeList = rh.showAllRecipes();
-		request.setAttribute("allRecipes", recipeList);
-		
-		if(recipeList.isEmpty()) {
-			request.setAttribute("allRecipes", " ");
-		}
-		
-		getServletContext().getRequestDispatcher("/listRecipes.jsp").forward(request, response);		
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		RecipeHelper recipeHelper = new RecipeHelper(null);
+		List<Recipe> allRecipes = recipeHelper.showAllRecipes();
+		request.setAttribute("allRecipes", allRecipes);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/listRecipes.jsp");
+		dispatcher.forward(request, response);
 	}
-	
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		doGet(request, response);
 	}
 

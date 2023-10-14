@@ -65,7 +65,7 @@
 //		try {
 //			StartProgram program = new StartProgram(entityManager);
 //			program.runMenu(scanner);
-//		} catch (Exception e) {
+//		} catch (DatabaseAccessException e)  {
 //			e.printStackTrace();
 //		} finally {
 //			if (entityManager != null && entityManager.isOpen()) {

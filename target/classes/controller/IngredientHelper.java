@@ -29,6 +29,9 @@ public class IngredientHelper {
 		//this.em = em;
 	//}
 
+	public IngredientHelper(EntityManager em) {
+	}
+
 	// Inserts a new ingredient into the database
 	public void insertIngredient(Ingredient toAdd) {
 		EntityManager em = emfactory.createEntityManager();

@@ -18,7 +18,7 @@ pageEncoding="UTF-8"%>
 		
 		<input type="submit" value="Save">
 	</form>
-	<a href="index.html">Return to Main Menu</a>
+	<a href="index.jsp">Return to Main Menu</a>
 	<a href="/categoryNavigationServlet">View All Categories</a>
 </body>
 </html>

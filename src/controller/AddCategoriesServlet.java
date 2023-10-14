@@ -32,7 +32,7 @@ public class AddCategoriesServlet extends HttpServlet {
 		String name = request.getParameter("name");
 		
 		Category newCategory = new Category(name);
-		CategoryHelper ch = new CategoryHelper();
+		CategoryHelper ch = new CategoryHelper(null);
 		ch.addCategory(newCategory);
 		
 		getServletContext().getRequestDispatcher("/viewAllCategoriesServlet").forward(request, response);

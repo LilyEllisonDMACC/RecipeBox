@@ -15,7 +15,7 @@
 	
 	</form>
 	
-	<a href="index.html">Return to Main Menu</a>
+	<a href="index.">Return to Main Menu</a>
 	
 	<a href="/categoryNavigationServlet">View All Categories</a>
 

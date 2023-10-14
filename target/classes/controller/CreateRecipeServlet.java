@@ -27,93 +27,66 @@ public class CreateRecipeServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("RecipeBox");
-		EntityManager em = emf.createEntityManager();
-		RecipeHelper rh = new RecipeHelper();
-		IngredientHelper ih = new IngredientHelper();
-		CategoryHelper ch = new CategoryHelper();
-		
-		
-		
-		// Initialize EntityManager and RecipeHelper
-		/**EntityManagerFactory emf = null;
+		EntityManagerFactory emf = null;
 		EntityManager em = null;
-		RecipeHelper rh = null;
-		IngredientHelper ih = null;
-		CategoryHelper ch = null;
 		try {
 			emf = Persistence.createEntityManagerFactory("RecipeBox");
 			em = emf.createEntityManager();
-			rh = new RecipeHelper(em);
-			ih = new IngredientHelper(em);
-			ch = new CategoryHelper(em);
+			RecipeHelper rh = new RecipeHelper(em);
+			CategoryHelper ch = new CategoryHelper(em);
+
+			// Get form parameters
+			String recipeName = request.getParameter("name");
+			int servings = Integer.parseInt(request.getParameter("servings"));
+			int prepTime = Integer.parseInt(request.getParameter("preparationTime"));
+
+			String category = request.getParameter("category");
+			Category categoryObj;
+			if (category.equals("New")) {
+				category = request.getParameter("newCategory");
+				categoryObj = new Category(category);
+			} else {
+				categoryObj = ch.getCategoryById(Integer.parseInt(category));
+			}
+
+			String ingredientBlock = request.getParameter("ingredients");
+			String instructionsBlock = request.getParameter("instructions");
+
+			String[] ingredientsSeparate = ingredientBlock.split("[,]", 0);
+			String[] instructionsSeparate = instructionsBlock.split("[,]", 0);
+
+			// Convert ingredientItems to List<Ingredient>
+			List<Ingredient> ingredientsList = new ArrayList<>();
+			for (int i = 0; i < ingredientsSeparate.length; i++) {
+				Ingredient j = new Ingredient(ingredientsSeparate[i]);
+				ingredientsList.add(j);
+			}
+
+			// Convert instructions to single String
+			String instructionText = String.join("\n", instructionsSeparate);
+
+			// Create new Recipe object
+			Recipe newRecipe = new Recipe(recipeName, servings, prepTime, categoryObj, instructionText);
+			newRecipe.setIngredients(ingredientsList);
+
+			// Insert new Recipe into database
+			rh.insertRecipe(newRecipe);
+
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-*/
-		// Get form parameters
-		String recipeName = request.getParameter("name");
-		int servings = Integer.parseInt(request.getParameter("servings"));
-		int prepTime = Integer.parseInt(request.getParameter("preparationTime"));
-		String category = request.getParameter("category");
-		Category categoryObj;
-		if(category.equals("New")) {
-			category = request.getParameter("newCategory");
-			categoryObj = new Category(category);
-		} else {
-			
-			categoryObj = ch.getCategoryByName(category);
-		}
-		String ingredientBlock = request.getParameter("ingredients");
-		//String[] ingredientAmounts = request.getParameterValues("ingredientAmt");
-		String instructionsBlock = request.getParameter("instructions");
-
-		String[] ingredientsSeparate = ingredientBlock.split("[,]", 0);
-		String[] instructionsSeparate = instructionsBlock.split("[,]", 0);
-		// Convert ingredientItems to List<Ingredient>
-		List<Ingredient> ingredientsList = new ArrayList<>();
-		
-		
-		for(int i=0; i<ingredientsSeparate.length; i++) {
-			Ingredient j = new Ingredient(ingredientsSeparate[i]);
-			ingredientsList.add(j);
-		}
-		
-		/**
-		for (String item : ingredientItems) {
-			String[] parts = item.split("|");
-			String name = parts[0];
-			// Utilize IngredientHelper
-			try {
-				Ingredient ingredient = ih.findIngredientByName(name);
-				if (ingredient == null) {
-					ingredient = new Ingredient(name);
-					ih.insertIngredient(ingredient);
-				}
-				ingredients.add(ingredient);
-			} catch (DatabaseAccessException e) {
-				e.printStackTrace();
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+			if (emf != null) {
+				emf.close();
 			}
 		}
-*/
-		// Convert instructions to single String
-		String instructionText = String.join("\n", instructionsSeparate);
 
-		// Create new Recipe object
-		//Category cat = new Category(category); // Assuming you have a way to get the Category object
-		Recipe newRecipe = new Recipe(recipeName, servings, prepTime, categoryObj, instructionText);
-		newRecipe.setIngredients(ingredientsList);
-
-		// Insert new Recipe into database
-		rh.insertRecipe(newRecipe);
-		
-
-
-
-		// Redirect to another page (e.g., viewAllRecipes.jsp)
+		// Redirect to another page
 		getServletContext().getRequestDispatcher("/viewAllRecipesServlet").forward(request, response);
 	}
-	
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doGet(request, response);

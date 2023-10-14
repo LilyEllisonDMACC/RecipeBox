@@ -15,37 +15,49 @@ import model.Category;
 @WebServlet("/editCategoryServlet")
 public class EditCategoryServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public EditCategoryServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+	public EditCategoryServlet() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		CategoryHelper ch = new CategoryHelper();
-		
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		CategoryHelper ch = new CategoryHelper(null); // You may need to initialize this properly
+		String action = request.getParameter("action");
+		Integer id = Integer.parseInt(request.getParameter("id"));
+
+		if ("delete".equals(action)) {
+			Category categoryToDelete = ch.getCategoryById(id);
+			ch.deleteCategory(categoryToDelete);
+		}
+		// Redirect to the list of categories
+		getServletContext().getRequestDispatcher("/viewAllCategoriesServlet").forward(request, response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		CategoryHelper ch = new CategoryHelper(null);
+
 		String name = request.getParameter("name");
 		Integer tempId = Integer.parseInt(request.getParameter("id"));
-		
+
 		Category categoryToUpdate = ch.getCategoryById(tempId);
 		categoryToUpdate.setName(name);
-		
+
 		ch.updateCategory(categoryToUpdate);
-		
+
 		getServletContext().getRequestDispatcher("/viewAllCategoriesServlet").forward(request, response);
 	}
 

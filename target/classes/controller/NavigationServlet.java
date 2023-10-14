@@ -36,7 +36,7 @@ public class NavigationServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RecipeHelper rh = new RecipeHelper();
+		RecipeHelper rh = new RecipeHelper(null);
 		String act = request.getParameter("doThisToRecipe");
 		
 		String path = "/viewAllRecipesServlet";
@@ -55,7 +55,7 @@ public class NavigationServlet extends HttpServlet {
 				Recipe recipeToEdit = rh.getRecipeById(tempId);
 				request.setAttribute("recipeToEdit", recipeToEdit);
 				path = "/editRecipe.jsp";
-				CategoryHelper ch = new CategoryHelper();
+				CategoryHelper ch = new CategoryHelper(null);
 				
 				request.setAttribute("allCategories", ch.getAllCategories());
 				

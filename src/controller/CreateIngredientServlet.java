@@ -1,15 +1,12 @@
 package controller;
 
 import model.Ingredient;
-import model.Recipe;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 @WebServlet(name = "IngredientServlet", value = "/ingredientServlet")
 public class CreateIngredientServlet extends HttpServlet {
@@ -21,7 +18,7 @@ public class CreateIngredientServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		IngredientHelper ingredientHelper = new IngredientHelper();
+		IngredientHelper ingredientHelper = new IngredientHelper(null);
 		
 		String ingredientName = request.getParameter("ingredientName"); // Assuming you pass the name as a parameter
 		//String ingredientAmount = request.getParameter("ingredientAmt");

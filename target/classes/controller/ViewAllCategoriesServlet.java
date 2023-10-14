@@ -30,7 +30,7 @@ public class ViewAllCategoriesServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		CategoryHelper ch = new CategoryHelper();
+		CategoryHelper ch = new CategoryHelper(null);
 		List<Category> categoryList = ch.getAllCategories();
 		request.setAttribute("allCategories", categoryList);
 		
