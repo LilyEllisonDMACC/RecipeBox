@@ -7,6 +7,10 @@
 <title>Recipe Details</title>
 <style>
 /* General styling */
+h1 {
+	text-align: center;
+}
+
 body {
 	font-family: Arial, sans-serif;
 	margin: 20px;
@@ -84,7 +88,7 @@ a:hover, button:hover {
 			</tr>
 			<tr>
 				<td><strong>Preparation Time:</strong></td>
-				<td>${recipeToView.preparationTime}minutes</td>
+				<td>${recipeToView.preparationTime} minutes</td>
 			</tr>
 			<tr>
 				<td><strong>Date Added:</strong></td>

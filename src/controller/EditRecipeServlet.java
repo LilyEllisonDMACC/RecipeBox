@@ -113,6 +113,6 @@ public class EditRecipeServlet extends HttpServlet {
 		rh.updateRecipe(recipeToUpdate);
 
 		// Redirect to another page
-		getServletContext().getRequestDispatcher("/viewAllRecipesServlet").forward(request, response);
+		response.sendRedirect("singleRecipeServlet?id=" + recipeToUpdate.getId());
 	}
 }
