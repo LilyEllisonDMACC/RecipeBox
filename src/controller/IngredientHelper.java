@@ -1,10 +1,11 @@
 /**
  * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
- * Oct 6, 2023
+ * Oct 13, 2023
+ * 
  * @author Adam Reese - amreese3
  * CIS175 - Fall 2023
- * Oct 6, 2023
+ * Oct 13, 2023
  */
 
 package controller;
@@ -29,6 +30,7 @@ public class IngredientHelper {
 		//this.em = em;
 	//}
 
+	// Constructor that initializes the EntityManager
 	public IngredientHelper(EntityManager em) {
 	}
 

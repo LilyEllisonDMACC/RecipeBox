@@ -1,16 +1,18 @@
 /**
  * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
- * Oct 6, 2023
+ * Oct 13, 2023
+ * 
  * @author Adam Reese - amreese3
  * CIS175 - Fall 2023
- * Oct 6, 2023
+ * Oct 13, 2023
  */
 
 package model;
 
 import javax.persistence.*;
 
+// Ingredient class
 @Entity
 @Table(name = "ingredient")
 public class Ingredient {
@@ -52,8 +54,6 @@ public class Ingredient {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
 
 	// Override toString() method
 	@Override

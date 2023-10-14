@@ -7,7 +7,6 @@
 <meta charset="ISO-8859-1">
 <title>Edit Recipe</title>
 <style>
-/* General styling */
 body {
 	font-family: Arial, sans-serif;
 	margin: 20px;
@@ -15,32 +14,64 @@ body {
 	background-color: white;
 }
 
-h1 {
-	text-align: center;
-}
-
 form {
-	text-align: center;
+	border: 1px solid black;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	max-width: 500px;
+	margin: auto;
 }
 
-label, input, select {
-	margin-bottom: 10px;
+label {
+	font-weight: bold;
+	margin-right: 10px;
+}
+
+input[type="text"], input[type="number"], select {
+	width: 100%;
+	padding: 10px;
+	margin: 10px 0;
+	border: 1px solid black;
+	border-radius: 5px;
 }
 
 /* Centered button */
-.centered-button {
+.center-button {
 	text-align: center;
 	margin-top: 20px;
 }
 
 input[type="submit"] {
+	font-size: 18px;
+	padding: 10px 20px;
+}
+
+h1 {
+	text-align: center;
+}
+
+.center-text {
+	text-align: center;
+}
+
+/* Centered links */
+.centered-links {
+	text-align: center;
+	margin-top: 20px;
+}
+
+.centered-links a {
+	margin: 10px;
+	text-decoration: none;
+	color: black;
+	background-color: white;
 	padding: 10px 20px;
 	border: 1px solid black;
 	border-radius: 5px;
-	cursor: pointer;
 }
 
-input[type="submit"]:hover {
+.centered-links a:hover {
 	background-color: grey;
 	color: white;
 }
@@ -75,9 +106,11 @@ input[type="submit"]:hover {
 			for="categoryDropdown">Category:</label> <select
 			id="categoryDropdown" name="category" required
 			onchange="showNewCategoryInput();">
-			<option value="" selected disabled>Select Category</option>
+			<option value="" disabled>Select Category</option>
 			<c:forEach var="category" items="${allCategories}">
-				<option value="${category.id}">${category.name}</option>
+				<option value="${category.id}"
+					<c:if test="${category.id == recipeToEdit.category.id}">selected</c:if>>
+					${category.name}</option>
 			</c:forEach>
 			<option value="New">-- Add New --</option>
 		</select> <input type="text" id="newCategoryInput" name="newCategory"
@@ -89,11 +122,16 @@ input[type="submit"]:hover {
 			for="instructionItem">Instructions, separated by commas:</label> <input
 			type="text" id="instructionItem" name="instructions"
 			value="${recipeToEdit.instructions}"> <br>
-
-		<div class="centered-button">
+		<div class="center-button">
 			<input type="submit" value="Save">
 		</div>
 	</form>
-
+	<br>
+	<br>
+	<div class="centered-links">
+		<a href="index.jsp">Return to Main Menu</a> <a
+			href="/RecipeBox/viewAllRecipesServlet">View All Recipes</a>
+	</div>
 </body>
+
 </html>

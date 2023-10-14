@@ -1,3 +1,13 @@
+/**
+ * @author Lily Ellison - lbellison
+ * CIS175 - Fall 2023
+ * Oct 13, 2023
+ * 
+ * @author Adam Reese - amreese3
+ * CIS175 - Fall 2023
+ * Oct 13, 2023
+ */
+
 package controller;
 
 import java.io.IOException;
@@ -21,7 +31,6 @@ public class EditCategoryServlet extends HttpServlet {
 	 */
 	public EditCategoryServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -37,6 +46,11 @@ public class EditCategoryServlet extends HttpServlet {
 		if ("delete".equals(action)) {
 			Category categoryToDelete = ch.getCategoryById(id);
 			ch.deleteCategory(categoryToDelete);
+		} else if ("edit".equals(action)) {
+			Category categoryToEdit = ch.getCategoryById(id);
+			request.setAttribute("categoryToEdit", categoryToEdit);
+			getServletContext().getRequestDispatcher("/editCategory.jsp").forward(request, response);
+			return;
 		}
 		// Redirect to the list of categories
 		getServletContext().getRequestDispatcher("/viewAllCategoriesServlet").forward(request, response);
@@ -60,5 +74,4 @@ public class EditCategoryServlet extends HttpServlet {
 
 		getServletContext().getRequestDispatcher("/viewAllCategoriesServlet").forward(request, response);
 	}
-
 }

@@ -1,10 +1,11 @@
 /**
  * @author Lily Ellison - lbellison
  * CIS175 - Fall 2023
- * Oct 7, 2023
+ * Oct 13, 2023
+ * 
  * @author Adam Reese - amreese3
  * CIS175 - Fall 2023
- * Oct 7, 2023
+ * Oct 13, 2023
  */
 
 package model;

@@ -1,3 +1,13 @@
+/**
+ * @author Lily Ellison - lbellison
+ * CIS175 - Fall 2023
+ * Oct 13, 2023
+ * 
+ * @author Adam Reese - amreese3
+ * CIS175 - Fall 2023
+ * Oct 13, 2023
+ */
+
 package controller;
 
 import java.io.IOException;
@@ -15,6 +25,7 @@ import model.Category;
  * Servlet implementation class ViewAllCategoriesServlet
  */
 @WebServlet("/viewAllCategoriesServlet")
+// List all categories in the database and display them in a list
 public class ViewAllCategoriesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        

@@ -1,3 +1,4 @@
+<-- Main page for the Recipe Box application. -->
 <!DOCTYPE html>
 <html>
 <head>

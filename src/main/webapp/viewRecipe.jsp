@@ -1,3 +1,4 @@
+<-- Recipe Details Page -->
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -67,7 +68,7 @@ body {
 			</tr>
 			<tr>
 				<td><strong>Preparation Time:</strong></td>
-				<td>${recipeToView.preparationTime} minutes</td>
+				<td>${recipeToView.preparationTime}minutes</td>
 			</tr>
 			<tr>
 				<td><strong>Date Added:</strong></td>
@@ -94,6 +95,7 @@ body {
 	<br>
 	<div style="text-align: center;">
 		<a href="index.jsp">Return to Main Menu</a> <a
+			href="editRecipeServlet?id=${recipeToView.id}">Edit Recipe</a> <a
 			href="viewAllRecipesServlet">View All Recipes</a>
 	</div>
 </body>

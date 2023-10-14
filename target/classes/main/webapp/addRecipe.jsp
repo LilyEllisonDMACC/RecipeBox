@@ -37,19 +37,14 @@ input[type="text"], input[type="number"], select {
 	border-radius: 5px;
 }
 
-input[type="submit"] {
-	background-color: black;
-	color: white;
-	padding: 10px 20px;
-	border: none;
-	border-radius: 5px;
-	cursor: pointer;
-	display: block;
-	margin: auto;
+.submit-button-wrapper {
+	text-align: center;
+	margin-top: 20px;
 }
 
-input[type="submit"]:hover {
-	background-color: grey;
+input[type="submit"] {
+	font-size: 18px;
+	padding: 10px 20px;
 }
 
 h1 {
@@ -58,6 +53,27 @@ h1 {
 
 .center-text {
 	text-align: center;
+}
+
+/* Centered links */
+.centered-links {
+	text-align: center;
+	margin-top: 20px;
+}
+
+.centered-links a {
+	margin: 10px;
+	text-decoration: none;
+	color: black;
+	background-color: white;
+	padding: 10px 20px;
+	border: 1px solid black;
+	border-radius: 5px;
+}
+
+.centered-links a:hover {
+	background-color: grey;
+	color: white;
 }
 </style>
 <script>
@@ -101,11 +117,15 @@ h1 {
 			type="text" id="ingredientItems" name="ingredients"> <br>
 		<label for="instructionItem">Instructions, separated by
 			commas:</label> <input type="text" id="instructionItem" name="instructions">
-		<br> <input type="submit" value="Submit">
+		<br>
+		<div class="submit-button-wrapper">
+			<input type="submit" value="Submit">
+		</div>
 	</form>
 	<br>
-	<div class="center-text">
+	<div class="centered-links">
 		<a href="index.jsp">Return to Main Menu</a>
+		<a href="/RecipeBox/viewAllRecipesServlet">View All Recipes</a>
 	</div>
 </body>
 </html>

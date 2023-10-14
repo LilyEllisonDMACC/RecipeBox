@@ -1,3 +1,13 @@
+/**
+ * @author Lily Ellison - lbellison
+ * CIS175 - Fall 2023
+ * Oct 13, 2023
+ * 
+ * @author Adam Reese - amreese3
+ * CIS175 - Fall 2023
+ * Oct 13, 2023
+ */
+
 package controller;
 
 import java.io.IOException;
@@ -16,6 +26,7 @@ import model.Recipe;
  * Servlet implementation class ViewRecipeServlet
  */
 @WebServlet("/viewAllRecipesServlet")
+// List all recipes in the database and forward to listRecipes.jsp
 public class ViewAllRecipesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

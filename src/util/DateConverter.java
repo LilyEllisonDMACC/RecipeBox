@@ -15,6 +15,7 @@ import javax.persistence.Converter;
 import java.sql.Date;
 import java.util.Calendar;
 
+// Converts java.util.Date to java.sql.Date and vice versa
 @Converter(autoApply = true)
 public class DateConverter implements AttributeConverter<java.util.Date, java.sql.Date> {
 
