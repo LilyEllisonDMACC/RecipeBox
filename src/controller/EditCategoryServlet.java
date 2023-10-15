@@ -39,13 +39,20 @@ public class EditCategoryServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		CategoryHelper ch = new CategoryHelper(null); // You may need to initialize this properly
+		CategoryHelper ch = new CategoryHelper(null);
 		String action = request.getParameter("action");
 		Integer id = Integer.parseInt(request.getParameter("id"));
 
 		if ("delete".equals(action)) {
-			Category categoryToDelete = ch.getCategoryById(id);
-			ch.deleteCategory(categoryToDelete);
+			if (ch.isCategoryUsed(id)) {
+				// Category is in use, set an error message
+				request.setAttribute("errorMessage",
+						"This category is in use by one or more recipes and cannot be deleted.");
+			} else {
+				// Category is not in use, proceed to delete
+				Category categoryToDelete = ch.getCategoryById(id);
+				ch.deleteCategory(categoryToDelete);
+			}
 		} else if ("edit".equals(action)) {
 			Category categoryToEdit = ch.getCategoryById(id);
 			request.setAttribute("categoryToEdit", categoryToEdit);

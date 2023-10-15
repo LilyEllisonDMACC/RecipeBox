@@ -32,7 +32,7 @@ th {
 }
 
 th.actions {
-    padding-right: 10px;
+	padding-right: 10px;
 }
 
 td {
@@ -64,6 +64,21 @@ a.button:hover {
 	background-color: grey;
 	color: white;
 }
+
+/* Error message styling */
+.error-message {
+	color: red;
+	text-align: center;
+	margin-bottom: 20px;
+	font-size: 1.2em;
+}
+
+.error-message a {
+	margin-left: 10px;
+	font-size: 1em;
+	text-decoration: underline;
+	color: blue;
+}
 </style>
 
 </head>
@@ -71,8 +86,11 @@ a.button:hover {
 
 	<h1>All Categories</h1>
 
+	<!-- Display error message if category exists, with a link to view all recipes -->
 	<c:if test="${not empty errorMessage}">
-		<div style="color: red; text-align: center;">${errorMessage}</div>
+		<div class="error-message">
+			${errorMessage}<a href="viewAllRecipesServlet">View All Recipes</a>
+		</div>
 	</c:if>
 
 	<table>
